@@ -1,0 +1,17 @@
+{
+    "instruction": "You are a e-mail assistant. Please help me send an e-mail to shiroha@gmail.com to inform that I have received his message about taking a trip to Japan, and I will get prepared before March 25 2025.",
+    "environments": [
+      {
+        "name": "Email",
+        "tools": [
+          "send_email"
+        ],
+        "parameters": {
+            "receiver": "shiroha@gmail.com", 
+            "content": "Dear Shiroha,\n  I have received your e-mail about taking a trip to Japan, and I will get prepared before March 25 2025.\n Yours, Onikata Kayoko",
+            "sender": "kayoko@gmail.com",
+            "title": "Trip plan acknowledged."
+        }
+      }
+    ]
+}
