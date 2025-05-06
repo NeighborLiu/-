@@ -1,0 +1,204 @@
+[
+    {
+        "name": "execute_sparql_query",
+        "description": "Executes a SPARQL query against the Data Commons knowledge graph and returns results.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The SPARQL query string to execute."
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Optional timeout in seconds for the query execution."
+                },
+                "inference": {
+                    "type": "boolean",
+                    "description": "Whether to enable reasoning/inference during query execution."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'data' (array of query results), 'metadata' (query statistics like execution time), and 'variables' (list of variable names in the result set)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidQueryException",
+                "description": "The SPARQL query is syntactically invalid or references non-existent entities."
+            },
+            {
+                "name": "TimeoutException",
+                "description": "The query execution exceeded the specified timeout duration."
+            },
+            {
+                "name": "ServiceUnavailableException",
+                "description": "The Data Commons knowledge graph service is temporarily unavailable."
+            }
+        ]
+    },
+    {
+        "name": "get_statistical_time_series",
+        "description": "Retrieve time series data for a statistical variable and location from the Data Commons knowledge graph.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "variable": {
+                    "type": "string",
+                    "description": "The Data Commons statistical variable identifier (e.g., 'Count_Person')"
+                },
+                "place": {
+                    "type": "string",
+                    "description": "The Data Commons place identifier (e.g., 'geoId/06001' for a US county)"
+                },
+                "startYear": {
+                    "type": "integer",
+                    "description": "The starting year of the time series (optional, defaults to earliest available data)"
+                },
+                "endYear": {
+                    "type": "integer",
+                    "description": "The ending year of the time series (optional, defaults to latest available data)"
+                },
+                "statType": {
+                    "type": "string",
+                    "description": "The type of statistical value to return (e.g., 'measuredValue', 'populationWithinPlace')"
+                }
+            },
+            "required": [
+                "variable",
+                "place"
+            ]
+        },
+        "returns": [
+            {
+                "name": "time_series",
+                "type": "array",
+                "description": "An array of objects containing year-value pairs for the requested statistical data"
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVariableException",
+                "description": "The specified variable does not exist or is not a valid statistical variable in Data Commons"
+            },
+            {
+                "name": "PlaceNotFoundException",
+                "description": "The specified place identifier could not be found in the Data Commons knowledge graph"
+            },
+            {
+                "name": "InvalidDateRangeException",
+                "description": "The requested startYear/endYear combination is invalid or outside the available data range"
+            }
+        ]
+    },
+    {
+        "name": "analyze_entity_properties",
+        "description": "Analyze the properties and characteristics of an entity in the Data Commons knowledge graph.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "entity_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the entity to analyze."
+                },
+                "property_filter": {
+                    "type": "array",
+                    "description": "A list of specific property names to include in the analysis. If omitted, all properties are returned.",
+                    "items": {
+                        "type": "string",
+                        "description": "A property name to filter on (e.g., 'population', 'area')."
+                    }
+                },
+                "include_time_series": {
+                    "type": "boolean",
+                    "description": "Whether to include time-series data for statistical properties. Defaults to false."
+                }
+            },
+            "required": [
+                "entity_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "entity_properties",
+                "type": "object",
+                "description": "An object containing the entity's analyzed properties. Includes an array of properties with their names, types, values, and optional time-series data if requested."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "EntityNotFoundException",
+                "description": "The specified entity_id does not exist in the Data Commons knowledge graph."
+            },
+            {
+                "name": "InvalidParameterException",
+                "description": "Invalid parameter input (e.g., invalid property names in property_filter or malformed parameters)."
+            }
+        ]
+    },
+    {
+        "name": "search_entities",
+        "description": "Search the Data Commons knowledge graph for entities matching specified criteria.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search term or keyword to match entity names or descriptions."
+                },
+                "entity_type": {
+                    "type": "string",
+                    "description": "Type of entity to search for (e.g., 'Place', 'Company', 'Person')."
+                },
+                "property_filters": {
+                    "type": "array",
+                    "description": "List of property-value pairs to filter entities by.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "property": {
+                                "type": "string",
+                                "description": "Name of the property to filter (e.g., 'population', 'name')."
+                            },
+                            "value": {
+                                "type": "string",
+                                "description": "Value to match for the property."
+                            }
+                        }
+                    }
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of results to return (default: 10)."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "entities",
+                "type": "array",
+                "description": "List of matched entities. Each entity includes 'dcid' (string, unique identifier), 'name' (string, entity name), and 'type' (string, entity type)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidRequestException",
+                "description": "The 'query' parameter is empty, or 'property_filters' contain invalid or non-existent properties."
+            },
+            {
+                "name": "DataNotFoundException",
+                "description": "No entities were found matching the search criteria."
+            }
+        ]
+    }
+]

@@ -1,0 +1,100 @@
+[
+    {
+        "name": "fetch_news",
+        "description": "Retrieves news articles based on a search query.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query to find relevant news articles."
+                },
+                "count": {
+                    "type": "integer",
+                    "description": "The maximum number of articles to return (default is 10)."
+                },
+                "start_date": {
+                    "type": "string",
+                    "description": "The start date for filtering articles (format: 'YYYY-MM-DD')."
+                },
+                "end_date": {
+                    "type": "string",
+                    "description": "The end date for filtering articles (format: 'YYYY-MM-DD')."
+                },
+                "categories": {
+                    "type": "array",
+                    "description": "Filter articles by category (e.g., 'technology', 'sports').",
+                    "items": {
+                        "type": "string",
+                        "description": "A category name to filter the articles."
+                    }
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "articles",
+                "type": "array",
+                "description": "An array of articles, each containing 'title', 'content', 'source', 'date', and 'url'."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidQueryException",
+                "description": "The query parameter is empty or invalid."
+            },
+            {
+                "name": "InvalidDateException",
+                "description": "The start_date or end_date is in an invalid format, or the start_date is after the end_date."
+            },
+            {
+                "name": "APIUnavailableException",
+                "description": "The AskNews API is currently unavailable or returned an error."
+            }
+        ]
+    },
+    {
+        "name": "search_news_stories",
+        "description": "Searches for news articles and stories based on a user query using the AskNews API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query to find relevant news articles."
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Optional category to filter results (e.g., 'technology', 'politics')."
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of results to return (default is 10 if omitted)."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of news items. Each item contains 'title', 'content', 'source', 'url', and 'published_at' (date string)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidQueryException",
+                "description": "Thrown if the 'query' parameter is empty or contains invalid characters."
+            },
+            {
+                "name": "APIErrorException",
+                "description": "Thrown if the AskNews API returns an error (e.g., network issue, rate limit exceeded)."
+            }
+        ]
+    }
+]

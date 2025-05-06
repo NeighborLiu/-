@@ -1,0 +1,224 @@
+[
+    {
+        "name": "search_files",
+        "description": "Searches for files by name or content across specified directories.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The term to search for (filename or content substring)."
+                },
+                "search_type": {
+                    "type": "string",
+                    "description": "Specify 'name' to search filenames or 'content' to search file contents."
+                },
+                "directories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Path of a directory to search in."
+                    },
+                    "description": "List of directories to search (defaults to current directory if omitted)"
+                },
+                "case_sensitive": {
+                    "type": "boolean",
+                    "description": "Whether the search should be case-sensitive (defaults to false)."
+                }
+            },
+            "required": [
+                "query",
+                "search_type"
+            ]
+        },
+        "returns": [
+            {
+                "name": "files",
+                "type": "array",
+                "description": "List of absolute file paths matching the search criteria. Each entry is a string."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSearchTypeException",
+                "description": "Thrown when 'search_type' is not 'name' or 'content'"
+            },
+            {
+                "name": "DirectoryAccessException",
+                "description": "Thrown when any directory in 'directories' cannot be accessed"
+            }
+        ]
+    },
+    {
+        "name": "execute_shell_command",
+        "description": "Executes a shell command and returns its output, exit code, and error stream.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "description": "The shell command to execute."
+                },
+                "timeout": {
+                    "type": "number",
+                    "description": "Optional timeout in seconds for the command execution."
+                },
+                "working_directory": {
+                    "type": "string",
+                    "description": "The directory to execute the command in. Defaults to the current working directory if omitted."
+                }
+            },
+            "required": [
+                "command"
+            ]
+        },
+        "returns": [
+            {
+                "name": "command_result",
+                "type": "object",
+                "description": "An object containing 'output' (string), 'exit_code' (integer), and 'error_message' (string) from the executed command."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidCommandException",
+                "description": "Thrown if the 'command' parameter is empty or contains invalid syntax that prevents execution."
+            },
+            {
+                "name": "CommandTimeoutException",
+                "description": "Thrown if the command execution exceeds the specified 'timeout' duration."
+            }
+        ]
+    },
+    {
+        "name": "kill_terminal_process",
+        "description": "Terminates a terminal process by its process ID (PID).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "pid": {
+                    "type": "integer",
+                    "description": "The process ID of the target terminal process."
+                },
+                "force": {
+                    "type": "boolean",
+                    "description": "Whether to force-terminate the process (e.g., using SIGKILL instead of SIGTERM)."
+                }
+            },
+            "required": [
+                "pid"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean, indicates termination success), 'message' (string, details like 'Process terminated' or error reason), and 'pid' (integer, the PID of the target process)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidPIDException",
+                "description": "The provided PID is not a valid integer or does not correspond to an active process."
+            },
+            {
+                "name": "ProcessTerminationFailedException",
+                "description": "The process could not be terminated, even with force termination enabled (e.g., insufficient permissions or system error)."
+            }
+        ]
+    },
+    {
+        "name": "list_terminal_sessions",
+        "description": "Lists terminal sessions across different operating systems, filtered by user, activity status, or OS type.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "string",
+                    "description": "The username to filter sessions by. Defaults to the current user if not provided."
+                },
+                "active_only": {
+                    "type": "boolean",
+                    "description": "Whether to list only active sessions. Defaults to true."
+                },
+                "os_type": {
+                    "type": "string",
+                    "description": "The operating system type to filter sessions by (e.g., 'linux', 'windows', 'mac')."
+                }
+            },
+            "required": []
+        },
+        "returns": [
+            {
+                "name": "sessions",
+                "type": "array",
+                "description": "An array of session objects. Each object contains 'session_id' (string), 'user' (string), 'os_type' (string), 'status' (string), and 'start_time' (number, Unix timestamp)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "AccessDeniedException",
+                "description": "The user does not have permission to list sessions for the specified user or OS type."
+            },
+            {
+                "name": "InvalidParameterException",
+                "description": "The provided OS type is invalid or not supported."
+            }
+        ]
+    },
+    {
+        "name": "create_terminal_session",
+        "description": "Create a new terminal session on a specified operating system with optional initial commands and settings.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "os_type": {
+                    "type": "string",
+                    "description": "Target operating system type (e.g., 'linux', 'windows', 'mac')."
+                },
+                "command": {
+                    "type": "string",
+                    "description": "Initial command to execute in the new terminal session."
+                },
+                "working_directory": {
+                    "type": "string",
+                    "description": "Directory path where the session should start (defaults to user's home directory)."
+                },
+                "persistent": {
+                    "type": "boolean",
+                    "description": "Whether the session remains active after command execution (default false)."
+                }
+            },
+            "required": [
+                "os_type",
+                "command"
+            ]
+        },
+        "returns": [
+            {
+                "name": "session_id",
+                "type": "string",
+                "description": "Unique identifier for the newly created terminal session."
+            },
+            {
+                "name": "status",
+                "type": "boolean",
+                "description": "Indicates if the session was successfully created."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidOSTypeException",
+                "description": "Specified 'os_type' is not supported or invalid."
+            },
+            {
+                "name": "CommandExecutionException",
+                "description": "The initial 'command' failed to execute due to syntax errors or permissions."
+            },
+            {
+                "name": "PathNotFoundException",
+                "description": "The 'working_directory' path does not exist on the target system."
+            }
+        ]
+    }
+]

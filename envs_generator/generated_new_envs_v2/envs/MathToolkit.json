@@ -1,0 +1,171 @@
+[
+    {
+        "name": "add_numbers",
+        "description": "Adds a list of numbers and returns the sum.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "numbers": {
+                    "type": "array",
+                    "description": "The list of numbers to add.",
+                    "items": {
+                        "type": "number",
+                        "description": "A number to be added"
+                    }
+                }
+            },
+            "required": [
+                "numbers"
+            ]
+        },
+        "returns": [
+            {
+                "name": "sum",
+                "type": "number",
+                "description": "The sum of all numbers provided."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidInputException",
+                "description": "Thrown if the 'numbers' array is empty or contains non-numeric values."
+            }
+        ]
+    },
+    {
+        "name": "multiply_numbers",
+        "description": "Multiply two numbers to get their product.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "a": {
+                    "type": "number",
+                    "description": "The first number to multiply."
+                },
+                "b": {
+                    "type": "number",
+                    "description": "The second number to multiply."
+                }
+            },
+            "required": [
+                "a",
+                "b"
+            ]
+        },
+        "returns": [
+            {
+                "name": "product",
+                "type": "number",
+                "description": "The result of multiplying the two input numbers."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "Thrown when either parameter 'a' or 'b' is not a valid number."
+            }
+        ]
+    },
+    {
+        "name": "subtract_numbers",
+        "description": "Subtract two numbers and return the result.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "minuend": {
+                    "type": "number",
+                    "description": "The number from which another number (the subtrahend) is to be subtracted."
+                },
+                "subtrahend": {
+                    "type": "number",
+                    "description": "The number that is to be subtracted from the minuend."
+                }
+            },
+            "required": [
+                "minuend",
+                "subtrahend"
+            ]
+        },
+        "returns": [
+            {
+                "name": "difference",
+                "type": "number",
+                "description": "The result of subtracting the subtrahend from the minuend."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidRequestException",
+                "description": "Thrown if either 'minuend' or 'subtrahend' is not a valid number."
+            }
+        ]
+    },
+    {
+        "name": "divide_numbers",
+        "description": "Performs division of two numbers, returning the quotient.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "numerator": {
+                    "type": "number",
+                    "description": "The number to be divided."
+                },
+                "denominator": {
+                    "type": "number",
+                    "description": "The number by which the numerator is divided. Must not be zero."
+                }
+            },
+            "required": [
+                "numerator",
+                "denominator"
+            ]
+        },
+        "returns": [
+            {
+                "name": "quotient",
+                "type": "number",
+                "description": "The result of dividing the numerator by the denominator."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "DivisionByZeroException",
+                "description": "Thrown when the denominator is zero, as division by zero is undefined."
+            }
+        ]
+    },
+    {
+        "name": "power_numbers",
+        "description": "Calculates the result of raising a base number to the power of an exponent.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "base": {
+                    "type": "number",
+                    "description": "The base number to be raised to the exponent."
+                },
+                "exponent": {
+                    "type": "number",
+                    "description": "The exponent indicating the power to which the base is raised."
+                }
+            },
+            "required": [
+                "base",
+                "exponent"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "number",
+                "description": "The computed value of base raised to the exponent."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidInputException",
+                "description": "Thrown when either base or exponent is not a valid number, or when the computation results in a non-real number (e.g., negative base with fractional exponent)."
+            }
+        ]
+    }
+]

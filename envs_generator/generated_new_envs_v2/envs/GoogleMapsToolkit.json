@@ -1,0 +1,166 @@
+[
+    {
+        "name": "get_elevation",
+        "description": "Retrieves elevation data for a specific geographic coordinate.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "description": "The latitude coordinate of the location (range: -90 to 90)."
+                },
+                "longitude": {
+                    "type": "number",
+                    "description": "The longitude coordinate of the location (range: -180 to 180)."
+                }
+            },
+            "required": [
+                "latitude",
+                "longitude"
+            ]
+        },
+        "returns": [
+            {
+                "name": "elevation_data",
+                "type": "object",
+                "description": "An object containing 'elevation' (number in meters), 'location' (object with input coordinates), and 'unit' (string, e.g., 'meters')."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidCoordinateException",
+                "description": "Thrown when latitude or longitude are outside valid ranges or non-numeric values."
+            },
+            {
+                "name": "ServiceErrorException",
+                "description": "Thrown when the Google Elevation API returns an error (e.g., network issue or service unavailability)."
+            }
+        ]
+    },
+    {
+        "name": "get_timezone",
+        "description": "Retrieves timezone information for a specified geographic location and timestamp.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "description": "Geographic latitude in degrees (-90 to 90)."
+                },
+                "longitude": {
+                    "type": "number",
+                    "description": "Geographic longitude in degrees (-180 to 180)."
+                },
+                "timestamp": {
+                    "type": "number",
+                    "description": "The timestamp (in milliseconds since the Unix epoch) for which to retrieve timezone data."
+                }
+            },
+            "required": [
+                "latitude",
+                "longitude",
+                "timestamp"
+            ]
+        },
+        "returns": [
+            {
+                "name": "timezone_data",
+                "type": "object",
+                "description": "Contains 'timezone_id' (string, the IANA timezone identifier), 'utc_offset' (integer, the offset from UTC in seconds), and 'dst_offset' (integer, the daylight saving offset in seconds)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidCoordinatesException",
+                "description": "Thrown if the latitude is outside the range [-90, 90] or the longitude is outside [-180, 180]."
+            },
+            {
+                "name": "InvalidTimestampException",
+                "description": "Thrown if the timestamp is not a valid Unix timestamp (e.g., negative or too far in the future)."
+            }
+        ]
+    },
+    {
+        "name": "validate_address",
+        "description": "Validates and returns detailed information about a specified address using Google Maps Geocoding API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "description": "The address string to validate (e.g., '1600 Amphitheatre Parkway, Mountain View, CA')."
+                },
+                "components": {
+                    "type": "object",
+                    "description": "Optional component filters (e.g., {'country': 'US'} to restrict results to a specific country)."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Preferred language for the response (e.g., 'en' for English)."
+                }
+            },
+            "required": [
+                "address"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Validated address details including 'formatted_address' (string), 'latitude' (number), 'longitude' (number), and 'address_components' (array of objects with type, long_name, short_name). Returns null if validation fails."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAddressException",
+                "description": "Thrown when the input address cannot be resolved to a valid location or required parameters are missing."
+            }
+        ]
+    },
+    {
+        "name": "get_directions",
+        "description": "Get directions between two locations.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "start_address": {
+                    "type": "string",
+                    "description": "The starting address for the directions."
+                },
+                "end_address": {
+                    "type": "string",
+                    "description": "The destination address for the directions."
+                },
+                "travel_mode": {
+                    "type": "string",
+                    "description": "The mode of travel (e.g., 'driving', 'walking', 'bicycling', 'transit'). Defaults to 'driving' if not provided."
+                }
+            },
+            "required": [
+                "start_address",
+                "end_address"
+            ]
+        },
+        "returns": [
+            {
+                "name": "directions",
+                "type": "object",
+                "description": "Contains 'success' (boolean indicating success), 'distance' (number in kilometers), 'duration' (number in minutes), 'steps' (array of strings with step-by-step directions), and 'error_message' (string if an error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAddressException",
+                "description": "One or both addresses are invalid or cannot be geocoded."
+            },
+            {
+                "name": "NoRouteFoundException",
+                "description": "No valid route could be found between the specified addresses."
+            },
+            {
+                "name": "InvalidTravelModeException",
+                "description": "The specified travel mode is not supported."
+            }
+        ]
+    }
+]

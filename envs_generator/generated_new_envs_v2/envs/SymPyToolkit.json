@@ -1,0 +1,213 @@
+[
+    {
+        "name": "solve_equation",
+        "description": "Solve an algebraic equation for a specified variable using SymPy.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "equation": {
+                    "type": "string",
+                    "description": "The algebraic equation to solve, e.g., 'x**2 + 2*x - 1 = 0'."
+                },
+                "variable": {
+                    "type": "string",
+                    "description": "The variable to solve for, e.g., 'x'."
+                }
+            },
+            "required": [
+                "equation",
+                "variable"
+            ]
+        },
+        "returns": [
+            {
+                "name": "solutions",
+                "type": "array",
+                "description": "A list of solutions as strings. Each element represents a solution, e.g., ['x = 1', 'x = -1']. If no solution is found, returns an empty list."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEquationException",
+                "description": "The equation is malformed or cannot be parsed by SymPy."
+            },
+            {
+                "name": "VariableNotFoundException",
+                "description": "The variable specified is not present in the equation."
+            }
+        ]
+    },
+    {
+        "name": "differentiate_expression",
+        "description": "Compute the derivative of a mathematical expression with respect to a variable.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "expression": {
+                    "type": "string",
+                    "description": "The mathematical expression to differentiate."
+                },
+                "variable": {
+                    "type": "string",
+                    "description": "The variable with respect to which to differentiate."
+                },
+                "order": {
+                    "type": "integer",
+                    "description": "The order of the derivative (must be a positive integer). Defaults to 1."
+                }
+            },
+            "required": [
+                "expression",
+                "variable"
+            ]
+        },
+        "returns": [
+            {
+                "name": "derivative",
+                "type": "string",
+                "description": "The resulting derivative expression as a string."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidExpressionException",
+                "description": "The provided expression is invalid or cannot be parsed by SymPy."
+            },
+            {
+                "name": "VariableNotFoundException",
+                "description": "The specified variable is not valid or not present in the expression."
+            },
+            {
+                "name": "InvalidOrderException",
+                "description": "The order parameter is not a positive integer."
+            }
+        ]
+    },
+    {
+        "name": "simplify_expression",
+        "description": "Simplifies a symbolic mathematical expression using SymPy's simplification algorithms.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "expression": {
+                    "type": "string",
+                    "description": "The mathematical expression to simplify (e.g., 'sin(x)^2 + cos(x)^2')."
+                },
+                "trig": {
+                    "type": "boolean",
+                    "description": "Optional flag to enable trigonometric simplifications. Defaults to false."
+                }
+            },
+            "required": [
+                "expression"
+            ]
+        },
+        "returns": [
+            {
+                "name": "simplified_expression",
+                "type": "string",
+                "description": "The simplified version of the input expression as a string."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidExpressionException",
+                "description": "Thrown when the input expression is invalid or cannot be parsed by SymPy."
+            }
+        ]
+    },
+    {
+        "name": "integrate_expression",
+        "description": "Perform symbolic integration of a mathematical expression.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "expression": {
+                    "type": "string",
+                    "description": "The mathematical expression to integrate (e.g., 'x**2 + 3*x')."
+                },
+                "variable": {
+                    "type": "string",
+                    "description": "The variable with respect to which the integration is performed (e.g., 'x')."
+                },
+                "lower_limit": {
+                    "type": "number",
+                    "description": "The lower bound for definite integration (e.g., 0)."
+                },
+                "upper_limit": {
+                    "type": "number",
+                    "description": "The upper bound for definite integration (e.g., 5)."
+                }
+            },
+            "required": [
+                "expression",
+                "variable"
+            ]
+        },
+        "returns": [
+            {
+                "name": "integrated_expression",
+                "type": "string",
+                "description": "The result of the integration as a string."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidExpressionException",
+                "description": "The provided expression could not be parsed as a valid mathematical expression."
+            },
+            {
+                "name": "InvalidVariableException",
+                "description": "The variable specified is invalid or not present in the expression."
+            },
+            {
+                "name": "IncompleteIntegrationLimitsException",
+                "description": "Both lower and upper limits must be provided for definite integration."
+            },
+            {
+                "name": "IntegrationFailedException",
+                "description": "The integration could not be computed due to mathematical limitations."
+            }
+        ]
+    },
+    {
+        "name": "invert_matrix",
+        "description": "Compute the inverse of a matrix using SymPy.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "matrix": {
+                    "type": "array",
+                    "description": "The matrix to invert, represented as a 2D array of numbers.",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "number",
+                            "description": "A numerical element of the matrix."
+                        }
+                    }
+                }
+            },
+            "required": [
+                "matrix"
+            ]
+        },
+        "returns": [
+            {
+                "name": "inverse_matrix",
+                "type": "array",
+                "description": "The inverse matrix as a 2D array of numbers if the input is invertible."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "NonSquareMatrixError",
+                "description": "Thrown when the input matrix is not square (number of rows does not equal number of columns)."
+            },
+            {
+                "name": "SingularMatrixError",
+                "description": "Thrown when the input matrix is singular (determinant is zero) and cannot be inverted."
+            }
+        ]
+    }
+]

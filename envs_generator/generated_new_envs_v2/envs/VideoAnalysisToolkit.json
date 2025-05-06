@@ -1,0 +1,247 @@
+[
+    {
+        "name": "analyze_video",
+        "description": "Analyze a video to extract frames and answer questions about its content.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_path": {
+                    "type": "string",
+                    "description": "The path to the video file."
+                },
+                "start_time": {
+                    "type": "number",
+                    "description": "The start time in seconds for frame extraction. Defaults to 0 if not provided."
+                },
+                "end_time": {
+                    "type": "number",
+                    "description": "The end time in seconds for frame extraction. Defaults to the video's duration if not provided."
+                },
+                "interval": {
+                    "type": "number",
+                    "description": "The interval in seconds between extracted frames. If provided, frames will be extracted at this interval between start and end times."
+                },
+                "question": {
+                    "type": "string",
+                    "description": "The question to be answered about the video content."
+                }
+            },
+            "required": [
+                "video_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains analysis results including 'success' (boolean), 'error_message' (string), 'frames' (array of extracted frame paths), and 'answer' (string if a question was provided)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVideoPathException",
+                "description": "The provided video path is invalid or inaccessible."
+            },
+            {
+                "name": "InvalidTimeRangeException",
+                "description": "The start_time exceeds end_time or negative values are provided."
+            },
+            {
+                "name": "AnalysisFailedException",
+                "description": "The analysis could not be completed due to an internal error or model failure."
+            }
+        ]
+    },
+    {
+        "name": "extract_video_frames",
+        "description": "Extracts individual frames from a video file at specified intervals.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_path": {
+                    "type": "string",
+                    "description": "The file path to the input video file."
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory path where extracted frames will be saved."
+                },
+                "frame_interval": {
+                    "type": "number",
+                    "description": "Number of seconds between extracted frames (default: 1.0)."
+                },
+                "start_time": {
+                    "type": "number",
+                    "description": "Start time in seconds from which extraction begins (default: 0)."
+                },
+                "end_time": {
+                    "type": "number",
+                    "description": "End time in seconds where extraction stops (default: video duration)."
+                }
+            },
+            "required": [
+                "video_path",
+                "output_directory"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'output_directory' (string), 'frame_paths' (array of strings containing paths to extracted frames), and 'success' (boolean indicating operation completion)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVideoPathException",
+                "description": "Thrown when the input video file path is invalid or inaccessible."
+            },
+            {
+                "name": "OutputDirectoryException",
+                "description": "Thrown when the output directory is invalid or not writeable."
+            },
+            {
+                "name": "FrameIntervalException",
+                "description": "Thrown when frame_interval is <= 0 or causes invalid frame timing."
+            }
+        ]
+    },
+    {
+        "name": "summarize_video_content",
+        "description": "Generate a textual summary of the video content using vision-language models.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_path": {
+                    "type": "string",
+                    "description": "The file path or URL of the video to be summarized."
+                },
+                "start_time": {
+                    "type": "number",
+                    "description": "Optional. The starting timestamp (in seconds) from which to begin the summary analysis."
+                },
+                "end_time": {
+                    "type": "number",
+                    "description": "Optional. The ending timestamp (in seconds) up to which the summary analysis is performed."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Optional. The language code (e.g., 'en', 'es') for the output summary text."
+                }
+            },
+            "required": [
+                "video_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "summary",
+                "type": "string",
+                "description": "A concise text summary of the video content based on visual and contextual analysis."
+            },
+            {
+                "name": "confidence_score",
+                "type": "number",
+                "description": "A value between 0 and 1 indicating the model's confidence in the summary's accuracy."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVideoPathException",
+                "description": "Thrown when the provided video path is invalid, inaccessible, or not a valid video format."
+            },
+            {
+                "name": "ProcessingErrorException",
+                "description": "Thrown if the video content cannot be analyzed due to technical issues or unsupported features."
+            }
+        ]
+    },
+    {
+        "name": "detect_objects_in_video",
+        "description": "Detects objects within video frames using a vision-language model and returns their locations and confidence scores.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_path": {
+                    "type": "string",
+                    "description": "Path to the input video file."
+                },
+                "frame_rate": {
+                    "type": "integer",
+                    "description": "Number of frames to analyze per second (default is 1)."
+                },
+                "confidence_threshold": {
+                    "type": "number",
+                    "description": "Minimum confidence score (between 0.0 and 1.0) required for an object detection to be considered valid."
+                }
+            },
+            "required": [
+                "video_path",
+                "confidence_threshold"
+            ]
+        },
+        "returns": [
+            {
+                "name": "detected_objects",
+                "type": "array",
+                "description": "An array of objects detected in the video. Each entry contains 'frame_number' (integer), 'object_name' (string), and 'confidence' (number)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "VideoPathNotFoundException",
+                "description": "The specified video path does not exist or is inaccessible."
+            },
+            {
+                "name": "InvalidConfidenceThresholdException",
+                "description": "The confidence_threshold parameter is not a valid number between 0.0 and 1.0."
+            }
+        ]
+    },
+    {
+        "name": "search_video_content",
+        "description": "Searches a video for specific content based on a text query and returns timestamps and relevant frames.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_path": {
+                    "type": "string",
+                    "description": "The file path or URL of the video to analyze."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "The text query to search for in the video content (e.g., 'person opening a door')."
+                },
+                "confidence_threshold": {
+                    "type": "number",
+                    "description": "Minimum confidence score (0.0-1.0) required to consider a match valid. Defaults to 0.7."
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "Maximum number of results to return. Defaults to 10."
+                }
+            },
+            "required": [
+                "video_path",
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "matches",
+                "type": "array",
+                "description": "Array of objects containing timestamp (seconds), frame index, and confidence score for each matched occurrence."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVideoPathException",
+                "description": "The specified video file path/URL is inaccessible or not a valid video format."
+            },
+            {
+                "name": "EmptyQueryException",
+                "description": "The 'query' parameter was an empty string or lacks semantic content to search."
+            }
+        ]
+    }
+]

@@ -1,0 +1,172 @@
+[
+    {
+        "name": "excel_to_markdown",
+        "description": "Converts an Excel file into a markdown table.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "Path to the Excel file to be converted."
+                },
+                "sheet": {
+                    "type": "string",
+                    "description": "Name or index of the sheet to convert. If omitted, the first sheet is used."
+                },
+                "header_rows": {
+                    "type": "integer",
+                    "description": "Number of rows to treat as headers. Defaults to 1 if omitted."
+                },
+                "include_formatting": {
+                    "type": "boolean",
+                    "description": "Whether to include markdown formatting such as pipes and borders. Defaults to true."
+                }
+            },
+            "required": [
+                "file_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "markdown_table",
+                "type": "string",
+                "description": "The generated markdown table representation of the Excel sheet."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "FileNotFoundError",
+                "description": "The specified Excel file does not exist or could not be accessed."
+            },
+            {
+                "name": "SheetNotFoundException",
+                "description": "The specified sheet name or index does not exist in the Excel file."
+            },
+            {
+                "name": "ConversionError",
+                "description": "An error occurred during the conversion process, such as invalid data formatting."
+            }
+        ]
+    },
+    {
+        "name": "excel_sheets_to_markdown",
+        "description": "Converts selected sheets from an Excel file into markdown tables with optional formatting options.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The local file path to the Excel (.xlsx/.xls) file."
+                },
+                "sheet_names": {
+                    "type": "array",
+                    "description": "List of sheet names to convert. If omitted, all sheets are processed.",
+                    "items": {
+                        "type": "string",
+                        "description": "Name of a specific sheet to convert"
+                    }
+                },
+                "include_headers": {
+                    "type": "boolean",
+                    "description": "Whether the first row should be treated as headers (default: true)"
+                },
+                "trim_whitespace": {
+                    "type": "boolean",
+                    "description": "Remove extra whitespace from cell contents (default: false)"
+                }
+            },
+            "required": [
+                "file_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "markdown_tables",
+                "type": "array",
+                "description": "Array of objects containing 'sheet_name' (string) and 'markdown' (string) for each converted sheet."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "FileNotFoundError",
+                "description": "The specified Excel file does not exist at the provided path."
+            },
+            {
+                "name": "SheetNotFound",
+                "description": "One or more specified sheet names do not exist in the Excel file."
+            },
+            {
+                "name": "InvalidFormatError",
+                "description": "The file is not a valid Excel file or contains unsupported formatting."
+            }
+        ]
+    },
+    {
+        "name": "excel_filter_to_markdown",
+        "description": "Converts an Excel sheet to a markdown table with optional row filtering based on specified criteria.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "input_file": {
+                    "type": "string",
+                    "description": "The path to the Excel file to process."
+                },
+                "sheet_name": {
+                    "type": "string",
+                    "description": "The name of the sheet to convert. Defaults to the first sheet if omitted."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "Filter criteria to select rows. Requires 'column', 'operator', and 'value'.",
+                    "properties": {
+                        "column": {
+                            "type": "string",
+                            "description": "The column name to filter on."
+                        },
+                        "operator": {
+                            "type": "string",
+                            "description": "The comparison operator (e.g., 'equals', 'contains', 'starts with', 'ends with')."
+                        },
+                        "value": {
+                            "type": "string",
+                            "description": "The value to compare against in the filter."
+                        }
+                    },
+                    "required": [
+                        "column",
+                        "operator",
+                        "value"
+                    ]
+                },
+                "include_header": {
+                    "type": "boolean",
+                    "description": "Whether to include the header row in the output. Defaults to true."
+                }
+            },
+            "required": [
+                "input_file"
+            ]
+        },
+        "returns": [
+            {
+                "name": "markdown_table",
+                "type": "string",
+                "description": "The generated markdown table containing filtered or unfiltered data from the Excel sheet."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "FileNotFoundError",
+                "description": "The specified Excel file does not exist."
+            },
+            {
+                "name": "InvalidSheetError",
+                "description": "The specified sheet name does not exist in the Excel file."
+            },
+            {
+                "name": "InvalidFilterException",
+                "description": "The filter parameters are missing required fields or have invalid values."
+            }
+        ]
+    }
+]

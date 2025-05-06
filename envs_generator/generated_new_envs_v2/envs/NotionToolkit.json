@@ -1,0 +1,256 @@
+[
+    {
+        "name": "get_notion_page",
+        "description": "Retrieves content from a Notion page using its unique identifier and the Notion API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "page_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Notion page to retrieve."
+                },
+                "integration_token": {
+                    "type": "string",
+                    "description": "The Notion API integration token for authentication."
+                },
+                "include_children": {
+                    "type": "boolean",
+                    "description": "Whether to include child blocks of the page in the response (default: false)."
+                },
+                "property_names": {
+                    "type": "array",
+                    "description": "List of property names to include in the response (optional filter).",
+                    "items": {
+                        "type": "string",
+                        "description": "Name of a property to retrieve"
+                    }
+                }
+            },
+            "required": [
+                "page_id",
+                "integration_token"
+            ]
+        },
+        "returns": [
+            {
+                "name": "page_data",
+                "type": "object",
+                "description": "Contains the retrieved page content including properties, blocks, and metadata if successful; includes error details if unsuccessful."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidPageIDException",
+                "description": "Thrown when the provided page_id is invalid or does not correspond to an existing Notion page."
+            },
+            {
+                "name": "AuthenticationFailedException",
+                "description": "Thrown when the integration_token is invalid or lacks sufficient permissions to access the page."
+            },
+            {
+                "name": "APIRequestException",
+                "description": "Thrown for general API errors such as network issues or rate limiting."
+            }
+        ]
+    },
+    {
+        "name": "search_notion_pages",
+        "description": "Search for Notion pages or databases based on query, filters, and sorting parameters.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search keyword or phrase to match page content or titles."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "Advanced filter object to narrow results by property values, e.g., {\"property\": \"Status\", \"equals\": \"Completed\"}."
+                },
+                "sort": {
+                    "type": "object",
+                    "description": "Sorting criteria object, e.g., {\"field\": \"last_edited_time\", \"direction\": \"descending\"}."
+                },
+                "page_size": {
+                    "type": "integer",
+                    "description": "Maximum number of results to return (1-100)."
+                },
+                "start_cursor": {
+                    "type": "string",
+                    "description": "Pagination cursor from a previous response to retrieve the next page of results."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "Array of matching page objects containing their ID, title, properties, and URL."
+            },
+            {
+                "name": "next_cursor",
+                "type": "string",
+                "description": "Cursor value for pagination to retrieve subsequent results, or null if no more pages."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidFilterException",
+                "description": "Thrown when the 'filter' parameter contains invalid syntax or references non-existent properties."
+            },
+            {
+                "name": "NotionAPIException",
+                "description": "Occurs when the Notion API returns an error (e.g., invalid authentication token, rate limiting)."
+            }
+        ]
+    },
+    {
+        "name": "get_notion_database",
+        "description": "Retrieve entries from a Notion database based on optional filtering criteria.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "database_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Notion database to query."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "A Notion-compatible filter object to narrow search results (e.g., property conditions)."
+                }
+            },
+            "required": [
+                "database_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "database_content",
+                "type": "object",
+                "description": "Contains 'results' (array of page objects in the database), 'next_cursor' (string pagination token), and 'has_more' (boolean indicating if more results exist)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidDatabaseIdException",
+                "description": "Thrown when the provided database ID is invalid or does not exist in the Notion workspace."
+            },
+            {
+                "name": "AuthenticationException",
+                "description": "Occurs when the Notion API credentials are invalid or lack access to the specified database."
+            },
+            {
+                "name": "InvalidFilterException",
+                "description": "Raised when the provided filter object is malformed or uses unsupported Notion filter syntax."
+            }
+        ]
+    },
+    {
+        "name": "list_notion_pages",
+        "description": "Retrieve a list of pages from a specified Notion database based on filters and sorting criteria.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "database_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Notion database to query."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "An object defining criteria to filter pages (e.g., property values)."
+                },
+                "sort": {
+                    "type": "array",
+                    "description": "An array of objects defining how to sort the results. Each object must include 'direction' (ascending/descending) and 'property' (property name).",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "direction": {
+                                "type": "string",
+                                "description": "Sorting direction (ascending or descending)"
+                            },
+                            "property": {
+                                "type": "string",
+                                "description": "The property name to sort by"
+                            }
+                        }
+                    }
+                }
+            },
+            "required": [
+                "database_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "pages",
+                "type": "array",
+                "description": "An array of page objects containing their content, properties, and metadata from the Notion database."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidDatabaseIDException",
+                "description": "Thrown if the provided 'database_id' is invalid or does not exist in the Notion workspace."
+            },
+            {
+                "name": "InvalidFilterException",
+                "description": "Thrown if the 'filter' parameter is malformed or contains unsupported criteria."
+            }
+        ]
+    },
+    {
+        "name": "get_notion_block_children",
+        "description": "Retrieve the children blocks of a specified Notion block using its ID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "block_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Notion block whose children are to be retrieved."
+                },
+                "page_size": {
+                    "type": "integer",
+                    "description": "The maximum number of children blocks to return in a single response (default is 100)."
+                },
+                "start_cursor": {
+                    "type": "string",
+                    "description": "The cursor used to fetch the next page of results (obtained from a previous response)."
+                }
+            },
+            "required": [
+                "block_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "children",
+                "type": "array",
+                "description": "An array of block objects representing the children of the specified Notion block."
+            },
+            {
+                "name": "has_more",
+                "type": "boolean",
+                "description": "Indicates whether there are more blocks available beyond the current response."
+            },
+            {
+                "name": "next_cursor",
+                "type": "string",
+                "description": "The cursor value to use in the next request to retrieve additional blocks."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidBlockIDException",
+                "description": "The provided block_id is invalid or does not correspond to an existing Notion block."
+            },
+            {
+                "name": "PermissionDeniedException",
+                "description": "The user does not have permission to access the specified block's children."
+            }
+        ]
+    }
+]

@@ -1,0 +1,199 @@
+[
+    {
+        "name": "fetch_academic_data",
+        "description": "Fetches academic paper or author data from the Semantic Scholar API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "entity_type": {
+                    "type": "string",
+                    "description": "The type of entity to retrieve, either 'paper' or 'author'."
+                },
+                "entity_id": {
+                    "type": "string",
+                    "description": "The specific ID of the paper or author to retrieve."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "Search query terms to find papers or authors (if entity_id is not provided)."
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "The name of a field to include in the response (e.g., 'title', 'abstract', 'citationCount')."
+                    },
+                    "description": "An array of fields to include in the response."
+                }
+            },
+            "required": [
+                "entity_type"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing the retrieved data. For a specific entity by ID, returns a single entity object. For a search query, returns an array of entities under 'data', along with pagination details like 'total' and 'nextPageToken'. Each entity includes fields based on the 'fields' parameter."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEntityIdException",
+                "description": "The provided entity_id does not exist in the Semantic Scholar database."
+            },
+            {
+                "name": "ApiRateLimitExceededException",
+                "description": "The API rate limit has been exceeded. Please try again later."
+            },
+            {
+                "name": "InvalidQueryFormatException",
+                "description": "The query parameter is empty or not properly formatted."
+            }
+        ]
+    },
+    {
+        "name": "get_academic_info",
+        "description": "Fetches academic papers or author information from the Semantic Scholar API using identifiers or search queries.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "paper_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the paper to retrieve."
+                },
+                "author_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the author to retrieve."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "A search query term for finding papers or authors (e.g., keywords, titles)."
+                },
+                "fields": {
+                    "type": "array",
+                    "description": "List of fields to include in the response (e.g., 'title', 'abstract', 'citationCount').",
+                    "items": {
+                        "type": "string",
+                        "description": "Field names to include in the response."
+                    }
+                }
+            },
+            "required": []
+        },
+        "returns": [
+            {
+                "name": "data",
+                "type": "object",
+                "description": "The requested academic data. For papers, includes fields like title, abstract, authors, and citations. For authors, includes their name, papers, and affiliations. If a query is used, returns a list of matching results."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidInputException",
+                "description": "Thrown if no valid identifier (paper_id/author_id) or query is provided, or if the provided ID is invalid."
+            },
+            {
+                "name": "APIUnavailableException",
+                "description": "Thrown if the Semantic Scholar API is unreachable, returns an error, or the request is rate-limited."
+            }
+        ]
+    },
+    {
+        "name": "retrieve_paper_details",
+        "description": "Fetch detailed information about an academic paper and its authors from the Semantic Scholar API using a paper ID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier of the paper to retrieve."
+                },
+                "fields": {
+                    "type": "array",
+                    "description": "An array of fields to include in the response (e.g., 'title', 'abstract', 'authors', 'citationCount').",
+                    "items": {
+                        "type": "string",
+                        "description": "Field names supported by the Semantic Scholar API."
+                    }
+                },
+                "include_citations": {
+                    "type": "boolean",
+                    "description": "Whether to include detailed citation information for the paper."
+                }
+            },
+            "required": [
+                "id",
+                "fields"
+            ]
+        },
+        "returns": [
+            {
+                "name": "paper_data",
+                "type": "object",
+                "description": "An object containing the requested fields for the paper, such as title, abstract, authors, or citation details."
+            },
+            {
+                "name": "error",
+                "type": "string",
+                "description": "An error message if the paper ID is invalid or fields are unsupported."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "PaperNotFoundException",
+                "description": "Thrown when the provided paper ID does not correspond to any known academic paper."
+            },
+            {
+                "name": "InvalidFieldException",
+                "description": "Thrown when one or more fields in the 'fields' parameter are not valid for the Semantic Scholar API."
+            }
+        ]
+    },
+    {
+        "name": "get_semantic_scholar_data",
+        "description": "Fetches data for a specific paper or author from Semantic Scholar using their unique identifier.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The unique identifier (ID) of the paper or author."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The type of entity to retrieve, must be either 'paper' or 'author'."
+                },
+                "fields": {
+                    "type": "array",
+                    "description": "A list of specific fields to include in the response. If omitted, returns all available fields.",
+                    "items": {
+                        "type": "string",
+                        "description": "A specific field name to include."
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "type"
+            ]
+        },
+        "returns": [
+            {
+                "name": "data",
+                "type": "object",
+                "description": "The retrieved data for the specified paper or author, including fields such as title, abstract, authors, citations, etc., depending on the type and fields requested. Returns an empty object if no data is found."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidRequestException",
+                "description": "The 'id' is invalid or empty, or the 'type' parameter is not 'paper' or 'author'."
+            },
+            {
+                "name": "APIErrorException",
+                "description": "An error occurred while communicating with the Semantic Scholar API."
+            }
+        ]
+    }
+]

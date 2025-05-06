@@ -1,0 +1,109 @@
+[
+    {
+        "name": "search_arxiv",
+        "description": "Searches the arXiv.org database for academic papers based on specified criteria.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query terms (e.g., 'quantum computing', 'machine learning')."
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "The maximum number of results to return (default: 10, max: 1000)."
+                },
+                "start": {
+                    "type": "integer",
+                    "description": "The starting index for pagination (used for large result sets)."
+                },
+                "sort_by": {
+                    "type": "string",
+                    "description": "Field to sort results by (e.g., 'relevance', 'lastUpdatedDate', 'submittedDate')."
+                },
+                "category": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Category code (e.g., 'cs.AI', 'math.QA')"
+                    },
+                    "description": "List of categories to filter the search results."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "List of paper entries. Each entry includes title, authors, abstract, submit date, categories, and arXiv ID."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidQueryException",
+                "description": "The query parameter is empty or contains invalid characters."
+            },
+            {
+                "name": "APIErrorException",
+                "description": "An error occurred communicating with the arXiv API (e.g., network issues or invalid response)."
+            }
+        ]
+    },
+    {
+        "name": "download_arxiv_paper",
+        "description": "Download an academic paper from arXiv by its ID in a specified format.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The arXiv ID of the paper (e.g., '1234.56789')."
+                },
+                "format": {
+                    "type": "string",
+                    "description": "The desired format (e.g., 'pdf', 'ps', 'other'). Defaults to 'pdf' if not provided."
+                },
+                "directory": {
+                    "type": "string",
+                    "description": "The local directory path where the paper will be saved."
+                },
+                "overwrite": {
+                    "type": "boolean",
+                    "description": "Whether to overwrite the file if it already exists in the directory. Defaults to false."
+                }
+            },
+            "required": [
+                "id",
+                "directory"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'file_path' (string, the path where the file was saved if successful), and 'error_message' (string, if any error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidArxivIDException",
+                "description": "The provided arXiv ID is invalid or does not exist."
+            },
+            {
+                "name": "DirectoryNotFoundException",
+                "description": "The specified directory does not exist or is inaccessible."
+            },
+            {
+                "name": "DownloadFailedException",
+                "description": "Failed to download the paper due to network issues or server errors."
+            },
+            {
+                "name": "InvalidFormatException",
+                "description": "The specified format is not supported by arXiv."
+            }
+        ]
+    }
+]

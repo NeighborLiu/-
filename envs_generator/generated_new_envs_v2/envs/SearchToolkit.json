@@ -1,0 +1,242 @@
+[
+    {
+        "name": "perform_search",
+        "description": "Perform a web search using specified search engines like Google, DuckDuckGo, Wikipedia, Bing, Baidu, or Wolfram Alpha.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query text."
+                },
+                "engine": {
+                    "type": "string",
+                    "description": "The search engine to use (e.g., 'google', 'duckduckgo', 'wikipedia', 'bing', 'baidu', 'wolframalpha')."
+                },
+                "num_results": {
+                    "type": "integer",
+                    "description": "The number of results to return. Defaults to 10 if not specified."
+                },
+                "result_type": {
+                    "type": "string",
+                    "description": "The type of results to retrieve (e.g., 'web', 'news', 'images'). Defaults to 'web'."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of search results. Each result contains 'title' (string, the result's title), 'url' (string, the result's URL), and 'snippet' (string, a brief description of the result)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEngineException",
+                "description": "The specified search engine is not supported or invalid."
+            },
+            {
+                "name": "SearchAPIError",
+                "description": "An error occurred while communicating with the search engine's API (e.g., network issues, invalid response format)."
+            }
+        ]
+    },
+    {
+        "name": "execute_web_search",
+        "description": "Executes a web search using specified search engines and returns organized results.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query string."
+                },
+                "engines": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Valid search engines include Google, DuckDuckGo, Wikipedia, Bing, BaiDu, and WolframAlpha."
+                    },
+                    "description": "List of search engines to use. If omitted, defaults to all available engines."
+                },
+                "num_results": {
+                    "type": "integer",
+                    "description": "Number of results to retrieve per engine (default is 10)."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of objects, each containing the search engine name and an array of results. Each result includes properties like 'title', 'link', and 'snippet'."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEngineException",
+                "description": "One or more specified search engines are not supported or invalid."
+            },
+            {
+                "name": "EmptyQueryException",
+                "description": "The search query is empty or consists only of whitespace."
+            },
+            {
+                "name": "ConnectionErrorException",
+                "description": "Failed to connect to one or more search engines due to network issues."
+            }
+        ]
+    },
+    {
+        "name": "search_web",
+        "description": "Performs a web search using the specified search engine and returns results.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query text."
+                },
+                "engine": {
+                    "type": "string",
+                    "description": "The search engine to use (e.g., 'google', 'duckduckgo', 'wikipedia', 'bing', 'baidu', 'wolframalpha')."
+                },
+                "num_results": {
+                    "type": "integer",
+                    "description": "Number of search results to return (default is 10 if unspecified)."
+                },
+                "include_summary": {
+                    "type": "boolean",
+                    "description": "Whether to include a summary of top search results."
+                }
+            },
+            "required": [
+                "query",
+                "engine"
+            ]
+        },
+        "returns": [
+            {
+                "name": "search_results",
+                "type": "object",
+                "description": "Contains 'results' (array of result objects with 'title', 'link', and 'snippet') and 'summary' (string) if include_summary is true."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEngineException",
+                "description": "The specified search engine is not supported or invalid."
+            },
+            {
+                "name": "ConnectionError",
+                "description": "Failed to connect to the search engine's API or service is unavailable."
+            },
+            {
+                "name": "APIRateLimitExceeded",
+                "description": "The search engine's API rate limit has been exceeded. Try again later."
+            }
+        ]
+    },
+    {
+        "name": "search_engine_query",
+        "description": "Performs a web search using specified search engines and returns structured results.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "engine": {
+                    "type": "string",
+                    "description": "The search engine to use (e.g., 'google', 'duckduckgo', 'wikipedia', 'bing', 'baidu', 'wolframalpha')."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "The search query terms."
+                },
+                "num_results": {
+                    "type": "integer",
+                    "description": "Number of results to return (default is 10)."
+                },
+                "include_summary": {
+                    "type": "boolean",
+                    "description": "Whether to include a summary of top results."
+                },
+                "raw_data": {
+                    "type": "boolean",
+                    "description": "Whether to return raw HTML data instead of structured results."
+                }
+            },
+            "required": [
+                "engine",
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "search_results",
+                "type": "object",
+                "description": "An object containing: 'results' (array of objects with 'title', 'url', and 'snippet'), 'success' (boolean indicating success), and 'error_message' (string if failed)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEngineException",
+                "description": "Thrown when the specified search engine is not supported or invalid."
+            },
+            {
+                "name": "ConnectionFailedException",
+                "description": "Thrown when the search cannot be performed due to network connectivity issues."
+            }
+        ]
+    },
+    {
+        "name": "web_search_query",
+        "description": "Performs a web search using specified search engines and returns structured results.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "engine": {
+                    "type": "string",
+                    "description": "The search engine to use (e.g., 'Google', 'DuckDuckGo', 'Wikipedia', 'Bing', 'BaiDu', 'Wolfram Alpha')."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "The search query terms."
+                },
+                "num_results": {
+                    "type": "integer",
+                    "description": "The number of search results to return (default is 10 if unspecified)."
+                },
+                "include_summary": {
+                    "type": "boolean",
+                    "description": "Whether to include a brief summary of each result (default is false)."
+                }
+            },
+            "required": [
+                "engine",
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of search results, each containing 'title' (string), 'link' (string), and 'snippet' (string if include_summary is true)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEngineException",
+                "description": "Thrown when the specified search engine is not supported or incorrectly formatted."
+            },
+            {
+                "name": "ConnectionError",
+                "description": "Thrown when the tool cannot connect to the search engine's API or service."
+            }
+        ]
+    }
+]

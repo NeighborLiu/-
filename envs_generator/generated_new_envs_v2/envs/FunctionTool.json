@@ -1,0 +1,313 @@
+[
+    {
+        "name": "create_function_tool",
+        "description": "Define a new function-based tool with schema validation and synthesis capabilities for OpenAI chat models to call.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The unique name of the function tool."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A brief description of what the function tool does."
+                },
+                "parameters": {
+                    "type": "object",
+                    "description": "Parameter schema defining the inputs accepted by the function tool.",
+                    "properties": {
+                        "parameter_name": {
+                            "type": "object",
+                            "description": "Parameter schema definition (nested structure for each parameter)."
+                        }
+                    },
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "description": "Data type of the parameter (e.g., 'integer', 'string')."
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "Description of the parameter's purpose."
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "description"
+                        ]
+                    }
+                },
+                "required": {
+                    "type": "array",
+                    "description": "List of parameter names that are required for the function tool.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "returns": {
+                    "type": "array",
+                    "description": "List of return objects defining the output structure of the function tool.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the return value."
+                            },
+                            "type": {
+                                "type": "string",
+                                "description": "Data type of the return value."
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "Description of the return value."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "type",
+                            "description"
+                        ]
+                    }
+                },
+                "exceptions": {
+                    "type": "array",
+                    "description": "List of exception objects defining possible errors from the function tool.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "Name of the exception."
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "Description of the exception scenario."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "description"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "description",
+                "parameters",
+                "returns"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'tool_id' (string if successful), and 'error_message' (string if failed)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidFunctionSchemaException",
+                "description": "Thrown when the provided parameters, returns, or exceptions schema is invalid or missing required fields."
+            }
+        ]
+    },
+    {
+        "name": "define_custom_function",
+        "description": "Define a new custom function with specified parameters and return type for use by chat models.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "function_name": {
+                    "type": "string",
+                    "description": "The name of the custom function to define."
+                },
+                "parameters": {
+                    "type": "object",
+                    "description": "An object where each key is a parameter name. Each value is an object with 'type' (string: 'integer', 'number', 'boolean', 'string', or 'array') and 'description' (string) for that parameter."
+                },
+                "returns": {
+                    "type": "object",
+                    "description": "An object containing 'type' (string) and 'description' (string) specifying the function's return type and purpose."
+                }
+            },
+            "required": [
+                "function_name",
+                "parameters",
+                "returns"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'function_id' (string: unique identifier if successful), and 'error_message' (string: details if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "FunctionAlreadyDefinedException",
+                "description": "The specified function name already exists in the system."
+            },
+            {
+                "name": "InvalidParameterSchemaException",
+                "description": "The provided parameters schema is invalid (e.g., missing 'type' or 'description' for a parameter)."
+            },
+            {
+                "name": "InvalidReturnSchemaException",
+                "description": "The provided return schema is invalid (e.g., missing 'type' or 'description')."
+            }
+        ]
+    },
+    {
+        "name": "register_function",
+        "description": "Registers a new function with the system, specifying its parameters and return type.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "function_name": {
+                    "type": "string",
+                    "description": "The name of the function to register."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A brief description of the function's purpose and behavior."
+                },
+                "parameters": {
+                    "type": "object",
+                    "description": "An object where each key is a parameter name, and each value is an object with 'type' (string) and 'description' (string)."
+                },
+                "return_type": {
+                    "type": "string",
+                    "description": "The data type of the return value (e.g., 'string', 'integer')."
+                }
+            },
+            "required": [
+                "function_name",
+                "parameters",
+                "return_type"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'function_id' (string if successful), and 'error_message' (string if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "FunctionRegistrationError",
+                "description": "Thrown if the function name is already registered, parameters are invalid (e.g., missing type or description), or return_type is invalid."
+            }
+        ]
+    },
+    {
+        "name": "define_function_schema",
+        "description": "Define a new function schema for use by OpenAI chat models, specifying parameters, returns, and exceptions.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the function to be defined."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Optional description of the function's purpose."
+                },
+                "parameters": {
+                    "type": "object",
+                    "description": "Schema defining the parameters the function accepts.",
+                    "properties": {
+                        "properties": {
+                            "type": "object",
+                            "description": "An object mapping parameter names to their schema definitions (type and description)."
+                        },
+                        "required": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "description": "The name of a required parameter."
+                            },
+                            "description": "List of parameter names that are required."
+                        }
+                    },
+                    "required": [
+                        "properties",
+                        "required"
+                    ]
+                },
+                "returns": {
+                    "type": "array",
+                    "description": "The return values schema for the function.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the return value."
+                            },
+                            "type": {
+                                "type": "string",
+                                "description": "The data type of the return value (e.g., integer, object)."
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "A brief description of the return value."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "type",
+                            "description"
+                        ]
+                    }
+                },
+                "exceptions": {
+                    "type": "array",
+                    "description": "The exceptions that the function may raise.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "description": "The exception name."
+                            },
+                            "description": {
+                                "type": "string",
+                                "description": "A brief description of the exception."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "description"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "parameters",
+                "returns"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'success' (boolean) indicating if the schema was created, 'schema_id' (string) on success, or 'error_message' (string) on failure."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSchemaException",
+                "description": "The provided parameters, returns, or exceptions schema is invalid (e.g., missing required fields, invalid types)."
+            }
+        ]
+    }
+]

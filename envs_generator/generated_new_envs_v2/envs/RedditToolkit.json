@@ -1,0 +1,228 @@
+[
+    {
+        "name": "get_top_posts",
+        "description": "Retrieve the top posts from a specified subreddit for a given time period.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "subreddit": {
+                    "type": "string",
+                    "description": "The name of the subreddit from which to collect top posts."
+                },
+                "time_filter": {
+                    "type": "string",
+                    "description": "The time period to consider for top posts (e.g., 'hour', 'day', 'week', 'month', 'year', or 'all')."
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "The maximum number of top posts to retrieve (must be between 1 and 100)."
+                }
+            },
+            "required": [
+                "subreddit",
+                "time_filter",
+                "limit"
+            ]
+        },
+        "returns": [
+            {
+                "name": "posts",
+                "type": "array",
+                "description": "An array of top posts, each containing 'title' (string), 'author' (string), 'score' (integer, upvotes), and 'created_utc' (number, Unix timestamp)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSubredditException",
+                "description": "The specified subreddit does not exist or is invalid."
+            },
+            {
+                "name": "InvalidTimeFilterException",
+                "description": "The 'time_filter' parameter contains an invalid value (must be one of 'hour', 'day', 'week', 'month', 'year', or 'all')."
+            },
+            {
+                "name": "InvalidLimitException",
+                "description": "The 'limit' parameter is not an integer between 1 and 100."
+            }
+        ]
+    },
+    {
+        "name": "analyze_comments_sentiment",
+        "description": "Performs sentiment analysis on comments of a specific Reddit post.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "subreddit": {
+                    "type": "string",
+                    "description": "The name of the subreddit containing the post."
+                },
+                "post_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Reddit post to analyze."
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "The maximum number of comments to analyze (default is 100)."
+                },
+                "time_filter": {
+                    "type": "string",
+                    "description": "Filters comments by time (e.g., 'hour', 'day', 'week', 'month')."
+                }
+            },
+            "required": [
+                "subreddit",
+                "post_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "sentiment_metrics",
+                "type": "object",
+                "description": "An object containing 'positive' (integer), 'neutral' (integer), and 'negative' (integer) counts of comments, along with 'average_score' (number) representing the average sentiment polarity (-1 to 1)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "PostNotFoundException",
+                "description": "The specified post_id does not exist in the provided subreddit."
+            },
+            {
+                "name": "InvalidParameterException",
+                "description": "The subreddit name is invalid, post_id is malformed, or required parameters are missing."
+            }
+        ]
+    },
+    {
+        "name": "track_keyword_discussions",
+        "description": "Track discussions containing a specific keyword across subreddits.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "type": "string",
+                    "description": "The keyword to track in discussions."
+                },
+                "subreddit": {
+                    "type": "string",
+                    "description": "The specific subreddit to search. If omitted, searches across all subreddits."
+                },
+                "time_frame": {
+                    "type": "string",
+                    "description": "The time frame for the search (e.g., 'hour', 'day', 'week', 'month', 'year', 'all'). Defaults to 'week'."
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "The maximum number of results to return. Defaults to 25."
+                }
+            },
+            "required": [
+                "keyword"
+            ]
+        },
+        "returns": [
+            {
+                "name": "discussions",
+                "type": "array",
+                "description": "An array of objects representing discussions containing the keyword. Each object includes post ID, title, subreddit, author, content, and keyword mentions count."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSubredditException",
+                "description": "The specified subreddit does not exist or is invalid."
+            },
+            {
+                "name": "EmptyKeywordException",
+                "description": "The keyword parameter is empty or not provided."
+            },
+            {
+                "name": "APIRateLimitException",
+                "description": "The Reddit API rate limit has been exceeded."
+            }
+        ]
+    },
+    {
+        "name": "get_subreddit_info",
+        "description": "Retrieves detailed information about a specific subreddit.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "subreddit_name": {
+                    "type": "string",
+                    "description": "The name of the subreddit (e.g., 'askreddit' or 'technology')."
+                }
+            },
+            "required": [
+                "subreddit_name"
+            ]
+        },
+        "returns": [
+            {
+                "name": "subreddit_data",
+                "type": "object",
+                "description": "An object containing subreddit details including 'display_name' (string), 'subscriber_count' (integer), 'description' (string), 'created_utc' (number, UNIX timestamp), and 'is_private' (boolean)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "SubredditNotFoundException",
+                "description": "Thrown when the specified subreddit does not exist or is not accessible."
+            },
+            {
+                "name": "InvalidSubredditNameException",
+                "description": "Thrown when the 'subreddit_name' parameter is empty or contains invalid characters."
+            }
+        ]
+    },
+    {
+        "name": "submit_post",
+        "description": "Submit a new text post to a specified subreddit on Reddit.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "subreddit": {
+                    "type": "string",
+                    "description": "The target subreddit's name (without the 'r/' prefix)"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the post (must be non-empty)"
+                },
+                "selftext": {
+                    "type": "string",
+                    "description": "The body/content of the text post (must be non-empty)"
+                },
+                "flair": {
+                    "type": "string",
+                    "description": "Optional flair ID or name to apply to the post"
+                }
+            },
+            "required": [
+                "subreddit",
+                "title",
+                "selftext"
+            ]
+        },
+        "returns": [
+            {
+                "name": "submission_response",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'post_id' (string if successful), and 'error' (string if unsuccessful)"
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSubredditException",
+                "description": "The specified subreddit does not exist or is not accessible"
+            },
+            {
+                "name": "AuthenticationException",
+                "description": "The Reddit API credentials are invalid or missing"
+            },
+            {
+                "name": "PostSubmissionFailed",
+                "description": "The post failed to submit due to validation errors or API restrictions"
+            }
+        ]
+    }
+]

@@ -1,0 +1,188 @@
+[
+    {
+        "name": "retrieve_vectors",
+        "description": "Retrieves information from a local vector storage system based on a query vector.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query_vector": {
+                    "type": "array",
+                    "description": "The vector used to query the storage, represented as an array of numerical values.",
+                    "items": {
+                        "type": "number",
+                        "description": "A numerical component of the query vector."
+                    }
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "The number of top results to return, ordered by similarity to the query vector."
+                },
+                "index_name": {
+                    "type": "string",
+                    "description": "The name of the index or storage where the vectors are stored."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "Optional filter criteria to narrow down the results. Key-value pairs where keys are field names and values are the criteria."
+                }
+            },
+            "required": [
+                "index_name",
+                "query_vector",
+                "top_k"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of objects containing the retrieved vectors. Each object includes 'id' (string, unique identifier), 'vector' (array of numbers), and 'similarity_score' (number) indicating the match quality."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "Thrown if the query_vector is not an array of numbers, or if top_k is not a positive integer."
+            },
+            {
+                "name": "IndexNotFoundException",
+                "description": "Thrown if the specified index_name does not exist in the storage system."
+            },
+            {
+                "name": "InvalidFilterException",
+                "description": "Thrown if the filter parameter is not a valid object or contains unsupported criteria."
+            }
+        ]
+    },
+    {
+        "name": "search_vectors",
+        "description": "Performs a similarity search on a local vector storage system to retrieve the most relevant vectors based on a query vector.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query_vector": {
+                    "type": "array",
+                    "description": "The numerical vector used to query the storage system."
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "The number of nearest neighbors to return (default: 10)."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "Optional key-value pairs to filter results by metadata attributes."
+                }
+            },
+            "required": [
+                "query_vector"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of objects containing 'id' (string), 'vector' (array), and 'distance' (number) for each matching result."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidQueryVectorError",
+                "description": "Thrown when the query_vector contains non-numeric values or invalid dimensions."
+            },
+            {
+                "name": "StorageNotInitializedError",
+                "description": "Thrown when the vector storage system has not been properly initialized."
+            }
+        ]
+    },
+    {
+        "name": "query_vector_database",
+        "description": "Retrieves similar vectors from a local vector storage system based on a query vector and specified parameters.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query_vector": {
+                    "type": "array",
+                    "description": "The numerical vector used to query similar entries in the vector database.",
+                    "items": {
+                        "type": "number",
+                        "description": "A numerical component of the query vector"
+                    }
+                },
+                "database_name": {
+                    "type": "string",
+                    "description": "Name of the vector database to query. Defaults to 'default_vector_db' if not provided."
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "Number of most similar vectors to return. Must be ≥1."
+                },
+                "filter": {
+                    "type": "object",
+                    "description": "Optional metadata filter to limit results (e.g., {\"category\": \"product\"})."
+                }
+            },
+            "required": [
+                "query_vector",
+                "top_k"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "Array of objects containing retrieved vector data, similarity scores, and metadata. Each object has 'vector_id' (string), 'similarity_score' (number), and 'metadata' (object)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVectorException",
+                "description": "Thrown if the query_vector contains non-numeric values or is empty."
+            },
+            {
+                "name": "DatabaseNotFoundException",
+                "description": "Occurs when the specified database_name does not exist in the system."
+            },
+            {
+                "name": "InvalidTopKException",
+                "description": "Raised when top_k is less than 1 or not an integer."
+            }
+        ]
+    },
+    {
+        "name": "fetch_similar_vectors",
+        "description": "Retrieves vectors similar to a query vector from a local vector storage system based on cosine similarity.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query_vector": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    },
+                    "description": "The numerical vector to search against, represented as an array of numbers."
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "The maximum number of most similar vectors to return (default is 10 if omitted)."
+                }
+            },
+            "required": [
+                "query_vector"
+            ]
+        },
+        "returns": [
+            {
+                "name": "results",
+                "type": "array",
+                "description": "An array of matching vectors, each containing 'id' (string identifier), 'vector' (the retrieved numerical array), and 'distance' (a similarity score where lower is more similar)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVectorFormatException",
+                "description": "The query_vector is invalid (e.g., empty, contains non-numeric values, or has incorrect dimensionality)."
+            }
+        ]
+    }
+]

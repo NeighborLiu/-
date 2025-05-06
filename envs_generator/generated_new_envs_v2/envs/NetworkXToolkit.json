@@ -1,0 +1,105 @@
+[
+    {
+        "name": "shortest_path",
+        "description": "Finds the shortest path between two nodes in a graph.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "graph": {
+                    "type": "object",
+                    "description": "Adjacency list representation of the graph. Each node is a key, and its value is an array of adjacent nodes. Edge attributes can be provided as nested objects."
+                },
+                "source": {
+                    "type": "string",
+                    "description": "The starting node of the path."
+                },
+                "target": {
+                    "type": "string",
+                    "description": "The destination node of the path."
+                },
+                "weight": {
+                    "type": "string",
+                    "description": "Name of the edge attribute to use as weight. Defaults to equal weight if not provided."
+                }
+            },
+            "required": [
+                "graph",
+                "source",
+                "target"
+            ]
+        },
+        "returns": [
+            {
+                "name": "path",
+                "type": "array",
+                "description": "List of nodes forming the shortest path from the source to the target node."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "NoPathFoundException",
+                "description": "No path exists between the specified source and target nodes in the graph."
+            },
+            {
+                "name": "InvalidGraphInputException",
+                "description": "The input graph is invalid, or the source/target nodes are not present in the graph."
+            }
+        ]
+    },
+    {
+        "name": "minimum_spanning_tree",
+        "description": "Calculates the minimum spanning tree of a weighted, undirected graph using Kruskal's algorithm.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "edges": {
+                    "type": "array",
+                    "description": "List of edges in the graph. Each edge is an object with 'source', 'target', and 'weight' properties.",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "description": "The source node of the edge."
+                            },
+                            "target": {
+                                "type": "string",
+                                "description": "The target node of the edge."
+                            },
+                            "weight": {
+                                "type": "number",
+                                "description": "The weight of the edge."
+                            }
+                        },
+                        "required": [
+                            "source",
+                            "target",
+                            "weight"
+                        ]
+                    }
+                },
+                "weight_attr": {
+                    "type": "string",
+                    "description": "The attribute name for the edge weights (default is 'weight').",
+                    "default": "weight"
+                }
+            },
+            "required": [
+                "edges"
+            ]
+        },
+        "returns": [
+            {
+                "name": "mst_edges",
+                "type": "array",
+                "description": "List of edges forming the minimum spanning tree. Each edge includes 'source', 'target', and 'weight'."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidGraphException",
+                "description": "The input edges are invalid (missing required fields) or the graph is disconnected and cannot form a spanning tree."
+            }
+        ]
+    }
+]

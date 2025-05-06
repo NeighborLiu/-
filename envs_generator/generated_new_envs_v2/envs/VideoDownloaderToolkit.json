@@ -1,0 +1,161 @@
+[
+    {
+        "name": "download_video",
+        "description": "Download a video from a supported service and optionally split it into chunks.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "The URL of the video to download."
+                },
+                "save_path": {
+                    "type": "string",
+                    "description": "The local path where the downloaded video (or chunks) will be saved."
+                },
+                "chunk_duration": {
+                    "type": "number",
+                    "description": "The duration of each chunk in seconds (if splitting is desired)."
+                },
+                "output_format": {
+                    "type": "string",
+                    "description": "The desired output format (e.g., 'mp4', 'avi')."
+                },
+                "include_subtitles": {
+                    "type": "boolean",
+                    "description": "Whether to include subtitles if available."
+                }
+            },
+            "required": [
+                "url",
+                "save_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'output_path' (string path of the downloaded file), 'chunks' (array of paths if split), and 'error' (string if any error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidURLException",
+                "description": "The provided URL is invalid or not supported by the service."
+            },
+            {
+                "name": "DownloadFailedException",
+                "description": "The download could not be completed due to network issues or service errors."
+            },
+            {
+                "name": "UnsupportedServiceException",
+                "description": "The video service corresponding to the URL is not supported by the toolkit."
+            }
+        ]
+    },
+    {
+        "name": "download_and_split_video",
+        "description": "Downloads a video from a supported service and optionally splits it into chunks based on specified duration.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_url": {
+                    "type": "string",
+                    "description": "The URL of the video to download."
+                },
+                "service": {
+                    "type": "string",
+                    "description": "Optional name of the video service (e.g., 'youtube', 'vimeo'). If omitted, inferred from URL."
+                },
+                "save_path": {
+                    "type": "string",
+                    "description": "The local path where the downloaded video will be saved."
+                },
+                "split_video": {
+                    "type": "boolean",
+                    "description": "Whether to split the video into chunks after downloading. Defaults to false."
+                },
+                "chunk_size_seconds": {
+                    "type": "number",
+                    "description": "The duration of each chunk in seconds. Required if split_video is true."
+                }
+            },
+            "required": [
+                "video_url",
+                "save_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'video_path' (string, path to downloaded video), 'chunks' (array of strings, paths to split chunks if applicable), and 'error_message' (string if any error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidURLException",
+                "description": "The provided video URL is invalid or cannot be parsed."
+            },
+            {
+                "name": "UnsupportedServiceException",
+                "description": "The video service is not supported by this tool."
+            },
+            {
+                "name": "DownloadFailedException",
+                "description": "The download process failed, possibly due to network issues or server errors."
+            },
+            {
+                "name": "InvalidChunkSizeException",
+                "description": "The specified chunk size is invalid (e.g., negative or too small)."
+            }
+        ]
+    },
+    {
+        "name": "split_video_into_chunks",
+        "description": "Splits a downloaded video file into smaller chunks of specified duration.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "video_path": {
+                    "type": "string",
+                    "description": "The local file path of the video to split."
+                },
+                "chunk_duration_seconds": {
+                    "type": "number",
+                    "description": "The duration (in seconds) of each chunk. Can be a decimal for fractions of a second."
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "The directory path where the video chunks will be saved."
+                }
+            },
+            "required": [
+                "video_path",
+                "chunk_duration_seconds",
+                "output_directory"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'chunk_paths' (array of string paths to each created chunk), and 'error_message' (string if any error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVideoPathException",
+                "description": "The specified video file path does not exist or is inaccessible."
+            },
+            {
+                "name": "InvalidDurationException",
+                "description": "The chunk duration is not a positive number (e.g., negative or zero)."
+            },
+            {
+                "name": "OutputDirectoryException",
+                "description": "The output directory is invalid, does not exist, or is not writable."
+            }
+        ]
+    }
+]

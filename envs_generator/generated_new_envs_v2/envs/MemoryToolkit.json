@@ -1,0 +1,95 @@
+[
+    {
+        "name": "save_memory",
+        "description": "Save the provided memory data to the ChatAgent's storage.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "memory_data": {
+                    "type": "object",
+                    "description": "The data to be saved in the memory. Must be a valid JSON object."
+                }
+            },
+            "required": [
+                "memory_data"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean, indicates whether the save was successful), 'message' (string, a status message), and 'stored_data' (the data that was stored, if successful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMemoryDataException",
+                "description": "The provided memory_data is not a valid JSON object or contains data types that cannot be stored."
+            }
+        ]
+    },
+    {
+        "name": "load_memory",
+        "description": "Loads the value associated with a specific key from the ChatAgent's memory.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "The key under which the value was stored."
+                },
+                "default_value": {
+                    "type": "object",
+                    "description": "The default value to return if the key is not found. Defaults to null if not provided."
+                }
+            },
+            "required": [
+                "key"
+            ]
+        },
+        "returns": [
+            {
+                "name": "value",
+                "type": "object",
+                "description": "The loaded value from memory, or the default_value if specified and the key was not found. Returns null if the key is not found and no default_value is provided."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "The key parameter is an empty string or not a valid string."
+            }
+        ]
+    },
+    {
+        "name": "clear_memory",
+        "description": "Clears specified or all memory entries of the ChatAgent.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "memory_type": {
+                    "type": "string",
+                    "description": "The type of memory to clear (e.g., 'short_term', 'long_term'). If omitted, all memory is cleared."
+                }
+            },
+            "required": []
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'success' (boolean indicating operation success), 'cleared_count' (integer number of entries cleared), and 'message' (string describing the outcome)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMemoryTypeException",
+                "description": "The specified 'memory_type' is not a valid memory category (e.g., 'short_term', 'long_term')."
+            },
+            {
+                "name": "MemoryAccessException",
+                "description": "Failed to access or modify the memory data due to system restrictions or invalid state."
+            }
+        ]
+    }
+]

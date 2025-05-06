@@ -1,0 +1,240 @@
+[
+    {
+        "name": "send_message",
+        "description": "Send a text message via WhatsApp Business API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "recipient_phone": {
+                    "type": "string",
+                    "description": "Recipient's phone number including country code (e.g., +1234567890)."
+                },
+                "message_text": {
+                    "type": "string",
+                    "description": "The text content of the message to send."
+                },
+                "template_name": {
+                    "type": "string",
+                    "description": "Name of a pre-approved WhatsApp message template (optional)."
+                },
+                "media_url": {
+                    "type": "string",
+                    "description": "URL or local path to media file (e.g., image or document) to include (optional)."
+                }
+            },
+            "required": [
+                "recipient_phone",
+                "message_text"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'message_id' (string, if successful), and 'error_message' (string, if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidPhoneNumberException",
+                "description": "The 'recipient_phone' parameter is missing, invalid, or lacks a valid country code."
+            },
+            {
+                "name": "EmptyMessageException",
+                "description": "The 'message_text' parameter is empty or only contains whitespace."
+            }
+        ]
+    },
+    {
+        "name": "manage_business_profile",
+        "description": "Retrieves or updates the WhatsApp Business profile information, including business category, description, and profile image.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "description": "The action to perform: 'GET' to retrieve profile details or 'UPDATE' to modify the profile."
+                },
+                "new_description": {
+                    "type": "string",
+                    "description": "Optional new description for the business profile when action is 'UPDATE'."
+                },
+                "new_profile_image_path": {
+                    "type": "string",
+                    "description": "Optional local path of the new profile image file when action is 'UPDATE'."
+                }
+            },
+            "required": [
+                "action"
+            ]
+        },
+        "returns": [
+            {
+                "name": "profile_data",
+                "type": "object",
+                "description": "Business profile details including category, description, profile image URL, and other metadata."
+            },
+            {
+                "name": "update_status",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'changes_made' (array of fields updated), and 'error_message' (string if applicable)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidProfileActionException",
+                "description": "Thrown when 'action' parameter is not 'GET' or 'UPDATE', or when required parameters are missing for the specified action."
+            },
+            {
+                "name": "ProfileUpdateFailedException",
+                "description": "Occurs if the profile update fails due to invalid image format, file path errors, or API restrictions."
+            }
+        ]
+    },
+    {
+        "name": "create_message_template",
+        "description": "Create a new message template in WhatsApp Business API for structured messages.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Unique name/ID for the message template."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Language code (e.g., 'en' for English) for the template."
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Category of the template (e.g., 'MARKETING', 'UTILITY')."
+                },
+                "parts": {
+                    "type": "array",
+                    "description": "Array of message components (text, buttons, etc.).",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "description": "Component type (e.g., 'text', 'button')."
+                            },
+                            "text": {
+                                "type": "string",
+                                "description": "Text content for the component."
+                            }
+                        }
+                    }
+                },
+                "example_parameters": {
+                    "type": "object",
+                    "description": "Example parameters to demonstrate template variables."
+                }
+            },
+            "required": [
+                "name",
+                "language",
+                "category",
+                "parts"
+            ]
+        },
+        "returns": [
+            {
+                "name": "template_status",
+                "type": "object",
+                "description": "Contains 'status' (string: 'success'/'failed'), 'template_id' (string if successful), and 'error_details' (string if failed)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "TemplateValidationException",
+                "description": "Invalid template structure (e.g., missing required fields, invalid component types)."
+            },
+            {
+                "name": "DuplicateTemplateNameException",
+                "description": "A template with the same name already exists in the specified language."
+            }
+        ]
+    },
+    {
+        "name": "get_message_status",
+        "description": "Check the delivery and read status of a sent WhatsApp message using its message ID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "message_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the message to check status for."
+                }
+            },
+            "required": [
+                "message_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "status_info",
+                "type": "object",
+                "description": "An object containing 'status' (string: 'pending'|'delivered'|'read'|'failed'), 'last_updated' (ISO 8601 timestamp of last status change), and 'error_details' (string, present only if status is 'failed')."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMessageIDException",
+                "description": "The provided message_id is invalid, does not exist in the system, or corresponds to a message not sent by this business account."
+            }
+        ]
+    },
+    {
+        "name": "list_message_templates",
+        "description": "Retrieve a list of message templates from the WhatsApp Business API, filtered by optional parameters.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "Filter templates by their approval status (e.g., 'approved', 'draft')."
+                },
+                "template_type": {
+                    "type": "string",
+                    "description": "Filter templates by their type (e.g., 'text', 'button', 'media')."
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Filter templates by their category (e.g., 'marketing', 'utility')."
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of templates to return (default: 20)."
+                },
+                "offset": {
+                    "type": "integer",
+                    "description": "Pagination offset for results (default: 0)."
+                }
+            },
+            "required": []
+        },
+        "returns": [
+            {
+                "name": "templates",
+                "type": "array",
+                "description": "Array of message templates, each containing 'template_name', 'namespace', 'status', and 'creation_time'."
+            },
+            {
+                "name": "total_count",
+                "type": "integer",
+                "description": "Total number of templates available matching the filters."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "Thrown if any parameter has an invalid value (e.g., unknown status or type)."
+            },
+            {
+                "name": "AuthenticationException",
+                "description": "Thrown if the API credentials are invalid or missing."
+            }
+        ]
+    }
+]

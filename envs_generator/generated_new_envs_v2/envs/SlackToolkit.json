@@ -1,0 +1,197 @@
+[
+    {
+        "name": "create_channel",
+        "description": "Create a new Slack channel.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the channel to create."
+                },
+                "is_private": {
+                    "type": "boolean",
+                    "description": "Whether the channel should be private. Defaults to false."
+                },
+                "team_id": {
+                    "type": "string",
+                    "description": "The Slack team ID. Optional if the current team context is already set."
+                }
+            },
+            "required": [
+                "name"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object with 'success' (boolean), 'channel_id' (string if successful), and 'error_message' (string if not successful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidChannelNameException",
+                "description": "The channel name is invalid (e.g., contains unsupported characters) or already exists."
+            },
+            {
+                "name": "SlackAPIException",
+                "description": "An error occurred while interacting with the Slack API, such as authentication failure or rate limiting."
+            }
+        ]
+    },
+    {
+        "name": "join_channel",
+        "description": "Joins a user to a specified Slack channel.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "channel": {
+                    "type": "string",
+                    "description": "The name or ID of the Slack channel to join."
+                },
+                "user_token": {
+                    "type": "string",
+                    "description": "(Optional) The user's authentication token. Defaults to the current session's token if omitted."
+                }
+            },
+            "required": [
+                "channel"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'channel_id' (string, the channel's unique ID if joined), and 'error_message' (string, details if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidChannelException",
+                "description": "The specified channel does not exist or is invalid."
+            },
+            {
+                "name": "AccessDeniedException",
+                "description": "The user lacks permission to join the channel or the token is invalid."
+            }
+        ]
+    },
+    {
+        "name": "add_member_to_channel",
+        "description": "Adds a user to a Slack channel by user ID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "channel_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Slack channel."
+                },
+                "user_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the user to add to the channel."
+                }
+            },
+            "required": [
+                "channel_id",
+                "user_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object with 'success' (boolean indicating operation result) and 'error_message' (string explaining failure cause, if any)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidChannelException",
+                "description": "The provided channel ID is invalid or does not exist in Slack."
+            },
+            {
+                "name": "UserNotFoundException",
+                "description": "The provided user ID does not correspond to an existing Slack user."
+            },
+            {
+                "name": "PermissionDeniedException",
+                "description": "The authenticated user lacks permission to add members to the specified channel."
+            }
+        ]
+    },
+    {
+        "name": "remove_member_from_channel",
+        "description": "Remove a member from a Slack channel.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "channel_id": {
+                    "type": "string",
+                    "description": "The ID of the Slack channel."
+                },
+                "user_id": {
+                    "type": "string",
+                    "description": "The user ID of the member to remove."
+                }
+            },
+            "required": [
+                "channel_id",
+                "user_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean indicating if removal was successful), and 'error_message' (string if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "SlackOperationException",
+                "description": "Either the channel_id or user_id is invalid, the channel does not exist, or the user is not a member of the channel."
+            }
+        ]
+    },
+    {
+        "name": "list_channel_members",
+        "description": "Lists all members of a specific Slack channel.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "channel_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the Slack channel."
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of members to return (default is 200)."
+                },
+                "cursor": {
+                    "type": "string",
+                    "description": "Pagination cursor for retrieving the next page of results."
+                }
+            },
+            "required": [
+                "channel_id"
+            ]
+        },
+        "returns": [
+            {
+                "name": "response",
+                "type": "object",
+                "description": "An object containing 'members' (array of user objects in the channel), 'next_cursor' (string for pagination), and 'has_more' (boolean indicating if there are more results)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidChannelException",
+                "description": "The specified 'channel_id' is invalid or does not exist."
+            },
+            {
+                "name": "PermissionDeniedException",
+                "description": "The user does not have permission to view the channel's members."
+            }
+        ]
+    }
+]

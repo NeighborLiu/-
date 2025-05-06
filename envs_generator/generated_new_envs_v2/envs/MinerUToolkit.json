@@ -1,0 +1,168 @@
+[
+    {
+        "name": "extract_document_content",
+        "description": "Extracts text, tables, and formulas from a document using OCR and advanced recognition algorithms.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "document_path": {
+                    "type": "string",
+                    "description": "The local or remote path to the document file (e.g., PDF, image)."
+                },
+                "ocr_enabled": {
+                    "type": "boolean",
+                    "description": "Whether to enable OCR for image-based documents. Defaults to true."
+                },
+                "detect_tables": {
+                    "type": "boolean",
+                    "description": "Whether to enable table detection in the document. Defaults to false."
+                },
+                "formula_recognition": {
+                    "type": "boolean",
+                    "description": "Whether to enable formula recognition in the document. Defaults to false."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "The language code for OCR (e.g., 'eng' for English, 'chs' for Simplified Chinese). Defaults to 'eng'."
+                }
+            },
+            "required": [
+                "document_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "text_content",
+                "type": "string",
+                "description": "The extracted text content from the document."
+            },
+            {
+                "name": "tables",
+                "type": "array",
+                "description": "Detected tables as an array of objects, where each object represents a table's structure (rows and columns)."
+            },
+            {
+                "name": "formulas",
+                "type": "array",
+                "description": "Detected mathematical formulas as an array of strings in LaTeX format."
+            },
+            {
+                "name": "metadata",
+                "type": "object",
+                "description": "Document metadata including page count, detection confidence score, and processing time."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidDocumentException",
+                "description": "The specified document path is invalid, the file format is unsupported, or the document cannot be processed."
+            },
+            {
+                "name": "UnsupportedLanguageException",
+                "description": "The specified OCR language is not supported by the MinerU API."
+            }
+        ]
+    },
+    {
+        "name": "process_document_data",
+        "description": "Process extracted document content using OCR, formula recognition, and table detection.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "document_data": {
+                    "type": "string",
+                    "description": "The raw document data (e.g., file path or base64-encoded string) to process."
+                },
+                "ocr_enabled": {
+                    "type": "boolean",
+                    "description": "Whether to enable OCR processing (default: true if unspecified)."
+                },
+                "formula_recognition_enabled": {
+                    "type": "boolean",
+                    "description": "Whether to enable formula recognition (default: false if unspecified)."
+                },
+                "table_detection_enabled": {
+                    "type": "boolean",
+                    "description": "Whether to enable table structure detection (default: false if unspecified)."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Optional language code (e.g., 'en') for OCR processing."
+                }
+            },
+            "required": [
+                "document_data"
+            ]
+        },
+        "returns": [
+            {
+                "name": "processed_content",
+                "type": "object",
+                "description": "Processed document data containing 'text' (string), 'formulas' (array of detected formula strings), and 'tables' (array of detected table structures as objects)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidDocumentException",
+                "description": "The input document data is invalid, corrupted, or in an unsupported format."
+            },
+            {
+                "name": "ProcessingErrorException",
+                "description": "An error occurred during processing (e.g., OCR failed, formula detection timed out)."
+            }
+        ]
+    },
+    {
+        "name": "detect_tables",
+        "description": "Detects and extracts tables from a document using OCR, returning their structure and content.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "document_path": {
+                    "type": "string",
+                    "description": "The local path to the document file (e.g., PDF, image)."
+                },
+                "page_range": {
+                    "type": "array",
+                    "description": "List of page numbers to process (1-based index).",
+                    "items": {
+                        "type": "integer",
+                        "description": "Page number to include in processing."
+                    }
+                },
+                "ocr_language": {
+                    "type": "string",
+                    "description": "Language code for OCR processing (e.g., 'eng' for English)."
+                },
+                "include_ocr_text": {
+                    "type": "boolean",
+                    "description": "Whether to include the raw OCR text along with table data."
+                }
+            },
+            "required": [
+                "document_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'tables' (array of detected tables with their structure) and optionally 'ocr_text' (string) if include_ocr_text is true."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidDocumentPathException",
+                "description": "The specified document path is invalid or inaccessible."
+            },
+            {
+                "name": "UnsupportedLanguageException",
+                "description": "The specified OCR language is not supported by the API."
+            },
+            {
+                "name": "TableDetectionError",
+                "description": "Failed to detect tables in the document due to processing errors."
+            }
+        ]
+    }
+]

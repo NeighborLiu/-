@@ -1,0 +1,235 @@
+[
+    {
+        "name": "execute_code",
+        "description": "Execute code in a specified sandbox environment such as Python, Jupyter, Docker, subprocess, or e2b.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The code to execute."
+                },
+                "environment": {
+                    "type": "string",
+                    "description": "The execution environment (e.g., 'python', 'jupyter', 'docker', 'subprocess', 'e2b')."
+                },
+                "timeout_seconds": {
+                    "type": "integer",
+                    "description": "The maximum time allowed in seconds before timing out."
+                },
+                "memory_limit_mb": {
+                    "type": "integer",
+                    "description": "The memory limit in megabytes for the execution."
+                },
+                "working_directory": {
+                    "type": "string",
+                    "description": "The working directory path for the execution."
+                }
+            },
+            "required": [
+                "code",
+                "environment"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'stdout' (string), 'stderr' (string), and 'exit_code' (integer) from the execution."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEnvironmentError",
+                "description": "The specified execution environment is invalid or not supported."
+            },
+            {
+                "name": "ExecutionTimeoutError",
+                "description": "The code execution exceeded the specified timeout duration."
+            },
+            {
+                "name": "ResourceLimitExceededError",
+                "description": "The execution exceeded the allocated memory or resource limits."
+            }
+        ]
+    },
+    {
+        "name": "run_code_in_sandbox",
+        "description": "Executes user-provided code in a selected sandbox environment (e.g., Python, Jupyter, Docker) with configurable resource limits and timeout settings.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The source code to execute in the target environment."
+                },
+                "environment": {
+                    "type": "string",
+                    "description": "The sandbox environment type (e.g., 'python', 'jupyter', 'docker', 'subprocess', 'e2b')."
+                },
+                "timeout_seconds": {
+                    "type": "number",
+                    "description": "Maximum allowed runtime for the code execution in seconds."
+                },
+                "capture_output": {
+                    "type": "boolean",
+                    "description": "Whether to capture stdout/stderr from the execution."
+                },
+                "resource_limits": {
+                    "type": "object",
+                    "description": "Optional resource constraints for memory and CPU usage.",
+                    "properties": {
+                        "memory_mb": {
+                            "type": "number",
+                            "description": "Maximum allowed memory in megabytes."
+                        },
+                        "cpu_cores": {
+                            "type": "number",
+                            "description": "Maximum CPU cores allowed (e.g., 0.5 for half a core)."
+                        }
+                    }
+                }
+            },
+            "required": [
+                "code",
+                "environment"
+            ]
+        },
+        "returns": [
+            {
+                "name": "execution_result",
+                "type": "object",
+                "description": "Contains execution status, captured output/error messages, and resource usage metrics."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "UnsupportedEnvironment",
+                "description": "Thrown when the requested environment is not supported by the sandbox."
+            },
+            {
+                "name": "InvalidCodeFormat",
+                "description": "Occurs if the code is malformed for the selected environment (e.g., syntax errors)."
+            },
+            {
+                "name": "ExecutionTimeoutExceeded",
+                "description": "Raised when the code execution exceeds the configured timeout limit."
+            },
+            {
+                "name": "ResourceLimitViolation",
+                "description": "Triggered if the code consumes more resources than allowed by the specified limits."
+            }
+        ]
+    },
+    {
+        "name": "run_code_sandboxed",
+        "description": "Executes code in a specified sandboxed environment such as Python, Jupyter, Docker, or subprocess.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The code to execute in the specified environment."
+                },
+                "environment": {
+                    "type": "string",
+                    "description": "The sandboxed environment to use (e.g., 'python', 'jupyter', 'docker', 'subprocess', 'e2b')."
+                },
+                "timeout": {
+                    "type": "number",
+                    "description": "The maximum time in seconds to allow execution before timing out."
+                },
+                "working_dir": {
+                    "type": "string",
+                    "description": "The working directory for the code execution."
+                },
+                "env_vars": {
+                    "type": "object",
+                    "description": "Environment variables to set as key-value pairs."
+                },
+                "stdin": {
+                    "type": "string",
+                    "description": "Input to be provided to the code's standard input."
+                }
+            },
+            "required": [
+                "code",
+                "environment"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'output' (string), 'error' (string), 'exit_code' (integer), and 'timed_out' (boolean)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidEnvironmentException",
+                "description": "The specified environment is not supported or invalid."
+            },
+            {
+                "name": "ExecutionTimeoutException",
+                "description": "The code execution exceeded the specified timeout."
+            },
+            {
+                "name": "CodeExecutionException",
+                "description": "An unexpected error occurred during code execution."
+            }
+        ]
+    },
+    {
+        "name": "execute_code_sandbox",
+        "description": "Execute code in a secure sandboxed environment with support for multiple runtime types.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The source code to execute"
+                },
+                "sandbox_type": {
+                    "type": "string",
+                    "description": "Type of execution environment (python, jupyter, docker, subprocess, e2b)"
+                },
+                "environment": {
+                    "type": "object",
+                    "description": "(Optional) Key-value pairs of environment variables for the sandbox",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "timeout": {
+                    "type": "number",
+                    "description": "(Optional) Maximum execution time in seconds (defaults to 30)"
+                }
+            },
+            "required": [
+                "code",
+                "sandbox_type"
+            ]
+        },
+        "returns": [
+            {
+                "name": "execution_result",
+                "type": "object",
+                "description": "Contains 'output' (string), 'error' (string if failed), and 'exit_code' (integer)"
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSandboxTypeException",
+                "description": "Thrown when sandbox_type is not one of the supported environments"
+            },
+            {
+                "name": "ExecutionTimeoutException",
+                "description": "Thrown when code execution exceeds specified timeout"
+            },
+            {
+                "name": "PermissionDeniedException",
+                "description": "Thrown when the requested sandbox type requires elevated permissions not available"
+            }
+        ]
+    }
+]

@@ -1,0 +1,184 @@
+[
+    {
+        "name": "search_pubmed",
+        "description": "Search PubMed for articles using specified query terms and return results.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query terms."
+                },
+                "retmax": {
+                    "type": "integer",
+                    "description": "Maximum number of results to return (default is 20 if not specified)."
+                },
+                "retmode": {
+                    "type": "string",
+                    "description": "Format of the returned data (e.g., 'xml', 'json', or 'text')."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "search_results",
+                "type": "object",
+                "description": "Contains 'results' (array of article summaries) and 'count' (integer total articles found). Each summary includes fields like title, authors, PMID, and abstract."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidQueryException",
+                "description": "The search query is invalid, contains unsupported syntax, or exceeds length limits."
+            },
+            {
+                "name": "APILimitExceededException",
+                "description": "The requested number of results (retmax) exceeds the API's allowed limit (max 10,000)."
+            },
+            {
+                "name": "APIConnectionException",
+                "description": "Failed to connect to the PubMed E-utilities API due to network issues or service unavailability."
+            }
+        ]
+    },
+    {
+        "name": "fetch_pubmed_articles",
+        "description": "Retrieve full articles or summaries from PubMed using article IDs.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "id_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "PubMed ID (PMID)"
+                    },
+                    "description": "List of PubMed IDs to retrieve."
+                },
+                "db": {
+                    "type": "string",
+                    "description": "Database name, e.g., 'pubmed' or 'pmc'"
+                },
+                "retmode": {
+                    "type": "string",
+                    "description": "Return mode, either 'xml' or 'text'. Defaults to 'xml'."
+                }
+            },
+            "required": [
+                "id_list",
+                "db"
+            ]
+        },
+        "returns": [
+            {
+                "name": "data",
+                "type": "string",
+                "description": "The retrieved data in the specified format (XML or text)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidIDListException",
+                "description": "The provided ID list is empty or contains invalid PubMed IDs."
+            },
+            {
+                "name": "PubMedAPIErrorException",
+                "description": "An error occurred while communicating with the PubMed API, such as rate limiting or invalid parameters."
+            }
+        ]
+    },
+    {
+        "name": "get_pubmed_summary",
+        "description": "Retrieve summary information for a list of PubMed IDs using the eSummary utility.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "PubMed ID as a string."
+                    },
+                    "description": "List of PubMed IDs to retrieve summaries for."
+                },
+                "retmode": {
+                    "type": "string",
+                    "enum": [
+                        "xml",
+                        "json"
+                    ],
+                    "default": "xml",
+                    "description": "Format of the returned data. Either 'xml' or 'json'."
+                }
+            },
+            "required": [
+                "ids"
+            ]
+        },
+        "returns": [
+            {
+                "name": "summaries",
+                "type": "array",
+                "description": "An array of summary objects, each containing the PubMed ID and corresponding summary text."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidIDFormatException",
+                "description": "One or more IDs provided are not valid PubMed identifiers (must be positive integers)."
+            },
+            {
+                "name": "APIRequestFailed",
+                "description": "The request to PubMed's E-utilities API failed due to network issues or server errors."
+            }
+        ]
+    },
+    {
+        "name": "get_related_pubmed_articles",
+        "description": "Retrieve related PubMed articles using the ELink utility based on a given PMID.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "pmid": {
+                    "type": "integer",
+                    "description": "The PubMed ID of the article to find related articles for."
+                },
+                "database": {
+                    "type": "string",
+                    "description": "(Optional) The target database for related articles (default: 'pubmed')."
+                },
+                "linkname": {
+                    "type": "string",
+                    "description": "(Optional) The type of link to retrieve (e.g., 'relatedarticles', 'citedby')."
+                },
+                "retmax": {
+                    "type": "integer",
+                    "description": "(Optional) The maximum number of related articles to return (default: 10)."
+                }
+            },
+            "required": [
+                "pmid"
+            ]
+        },
+        "returns": [
+            {
+                "name": "related_articles",
+                "type": "array",
+                "description": "An array of related PubMed IDs (PMIDs) as strings."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidPMIDException",
+                "description": "The specified PMID is invalid, does not exist, or no related articles were found."
+            },
+            {
+                "name": "ServiceException",
+                "description": "An error occurred while communicating with the PubMed E-utilities API."
+            }
+        ]
+    }
+]

@@ -1,0 +1,236 @@
+[
+    {
+        "name": "get_stock_data",
+        "description": "Retrieve historical price data for a specific stock.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "symbol": {
+                    "type": "string",
+                    "description": "The stock symbol (e.g., AAPL for Apple Inc.)."
+                },
+                "start_date": {
+                    "type": "string",
+                    "description": "The start date of the data range in 'YYYY-MM-DD' format."
+                },
+                "end_date": {
+                    "type": "string",
+                    "description": "The end date of the data range in 'YYYY-MM-DD' format."
+                },
+                "interval": {
+                    "type": "string",
+                    "description": "The time interval between data points (e.g., '1d' for daily, '1wk' for weekly)."
+                }
+            },
+            "required": [
+                "symbol"
+            ]
+        },
+        "returns": [
+            {
+                "name": "data",
+                "type": "array",
+                "description": "An array of historical price data entries. Each entry contains date, open price, high price, low price, close price, and volume."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSymbolException",
+                "description": "The provided stock symbol is invalid or does not exist in the database."
+            },
+            {
+                "name": "InvalidDateException",
+                "description": "The start_date is after the end_date, or the dates are not in the correct format."
+            }
+        ]
+    },
+    {
+        "name": "get_etf_data",
+        "description": "Retrieve and analyze data for a specific ETF, including holdings, performance metrics, and sector allocations.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "symbol": {
+                    "type": "string",
+                    "description": "The ETF ticker symbol (e.g., SPY)."
+                },
+                "data_type": {
+                    "type": "string",
+                    "description": "Type of data to retrieve: 'holdings', 'performance', or 'allocations'."
+                },
+                "start_date": {
+                    "type": "string",
+                    "description": "Start date for performance data (YYYY-MM-DD). Only applicable when data_type is 'performance'."
+                },
+                "end_date": {
+                    "type": "string",
+                    "description": "End date for performance data (YYYY-MM-DD). Only applicable when data_type is 'performance'."
+                }
+            },
+            "required": [
+                "symbol",
+                "data_type"
+            ]
+        },
+        "returns": [
+            {
+                "name": "etf_data",
+                "type": "object",
+                "description": "The requested ETF data. Structure varies by data_type: 'holdings' returns an array of holdings with their details; 'performance' returns time series metrics between start_date and end_date; 'allocations' returns sector/asset class breakdown."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSymbolException",
+                "description": "The ETF symbol is invalid or not found in the system."
+            },
+            {
+                "name": "InvalidDataFormatException",
+                "description": "The start_date or end_date is not in the correct format (YYYY-MM-DD)."
+            },
+            {
+                "name": "InvalidDataTypeException",
+                "description": "The data_type provided is not one of the accepted values ('holdings', 'performance', 'allocations')."
+            }
+        ]
+    },
+    {
+        "name": "get_crypto_data",
+        "description": "Fetch historical price data for a cryptocurrency pair.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "symbol": {
+                    "type": "string",
+                    "description": "The cryptocurrency symbol (e.g., BTC, ETH)."
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The currency pair (e.g., USD, EUR). Defaults to USD if not provided."
+                },
+                "interval": {
+                    "type": "string",
+                    "description": "The time interval between data points (e.g., 1m, 5m, 1h). Defaults to 1d (daily)."
+                },
+                "start_date": {
+                    "type": "string",
+                    "description": "The start date for historical data in YYYY-MM-DD format."
+                },
+                "end_date": {
+                    "type": "string",
+                    "description": "The end date for historical data in YYYY-MM-DD format."
+                }
+            },
+            "required": [
+                "symbol"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'data' (array of price data points), 'symbol_used' (string), 'currency_pair' (string), 'interval_used' (string), and 'status' (string indicating success/failure)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSymbolException",
+                "description": "The provided cryptocurrency symbol is invalid or not supported."
+            },
+            {
+                "name": "InvalidDateFormatException",
+                "description": "The start_date or end_date parameters are not in the correct YYYY-MM-DD format."
+            },
+            {
+                "name": "DataNotFoundException",
+                "description": "No data exists for the requested cryptocurrency pair and date range."
+            }
+        ]
+    },
+    {
+        "name": "get_economic_data",
+        "description": "Retrieve historical or current economic indicator data for a specified country and indicator.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "indicator": {
+                    "type": "string",
+                    "description": "The economic indicator to retrieve (e.g., 'GDP', 'CPI', 'Unemployment Rate')."
+                },
+                "country": {
+                    "type": "string",
+                    "description": "The country for which to retrieve the economic data (e.g., 'United States', 'Germany')."
+                },
+                "start_date": {
+                    "type": "string",
+                    "description": "The start date for historical data in 'YYYY-MM-DD' format (optional)."
+                },
+                "end_date": {
+                    "type": "string",
+                    "description": "The end date for historical data in 'YYYY-MM-DD' format (optional)."
+                }
+            },
+            "required": [
+                "indicator",
+                "country"
+            ]
+        },
+        "returns": [
+            {
+                "name": "data",
+                "type": "array",
+                "description": "Array of economic data entries. Each entry contains 'date' (string), 'value' (number), and 'unit' (string) of the indicator."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "Thrown if the indicator, country, or date parameters are invalid or unsupported."
+            },
+            {
+                "name": "DataNotFoundException",
+                "description": "Thrown if no data is found for the specified parameters."
+            }
+        ]
+    },
+    {
+        "name": "get_company_profile",
+        "description": "Retrieves detailed company information including business description, financial highlights, and executive data based on a stock ticker symbol.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "ticker": {
+                    "type": "string",
+                    "description": "The stock ticker symbol of the company (e.g., AAPL for Apple Inc.)."
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Optional. Specify particular fields to include in the response. If omitted, all available fields are returned."
+                }
+            },
+            "required": [
+                "ticker"
+            ]
+        },
+        "returns": [
+            {
+                "name": "company_profile",
+                "type": "object",
+                "description": "Contains company details such as name, industry, sector, executives, market capitalization, and other financial metrics based on the OpenBB Platform's data."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidTickerException",
+                "description": "The provided ticker symbol is invalid, not found in the system, or does not correspond to a listed company."
+            },
+            {
+                "name": "DataUnavailableException",
+                "description": "The requested fields or company data are not available through the OpenBB Platform's current data sources."
+            }
+        ]
+    }
+]

@@ -1,0 +1,157 @@
+[
+    {
+        "name": "collect_human_feedback",
+        "description": "Collect human feedback on a model's output for iterative improvement.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "task_id": {
+                    "type": "string",
+                    "description": "Unique identifier for the task requiring human feedback."
+                },
+                "model_output": {
+                    "type": "string",
+                    "description": "The model's output that needs human evaluation."
+                },
+                "context": {
+                    "type": "object",
+                    "description": "Additional context (e.g., metadata, instructions) provided to the human evaluator."
+                },
+                "feedback_options": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of possible feedback options the human can select from (e.g., 'Correct', 'Incorrect', 'Unclear')."
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Maximum time in seconds to wait for feedback before returning an error."
+                }
+            },
+            "required": [
+                "task_id",
+                "model_output"
+            ]
+        },
+        "returns": [
+            {
+                "name": "feedback_data",
+                "type": "object",
+                "description": "An object containing 'response' (the human's feedback text or selected option), 'rating' (optional numerical score from 1-5), 'timestamp' (when feedback was submitted), and 'timeout_occurred' (boolean indicating if the feedback was provided before the timeout)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "TaskNotFoundException",
+                "description": "The provided 'task_id' does not correspond to a registered task in the system."
+            },
+            {
+                "name": "FeedbackTimeoutException",
+                "description": "No feedback was received within the specified 'timeout' period."
+            },
+            {
+                "name": "InvalidFeedbackFormatException",
+                "description": "The human's feedback could not be parsed (e.g., selected an invalid option outside the 'feedback_options' list)."
+            }
+        ]
+    },
+    {
+        "name": "gather_user_preferences",
+        "description": "Collect structured user preferences or ratings to refine AI model outputs interactively.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "type": "array",
+                    "description": "List of possible choices presented to the user",
+                    "items": {
+                        "type": "string",
+                        "description": "Individual option text"
+                    }
+                },
+                "prompt_message": {
+                    "type": "string",
+                    "description": "Custom instruction message to guide user selection"
+                },
+                "allow_other": {
+                    "type": "boolean",
+                    "description": "Whether to allow free-text input for custom responses"
+                }
+            },
+            "required": [
+                "options",
+                "prompt_message"
+            ]
+        },
+        "returns": [
+            {
+                "name": "user_response",
+                "type": "object",
+                "description": "Contains 'selected_option' (string), 'other_response' (string if allow_other is true), and 'timestamp' (ISO 8601 string)"
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidInputException",
+                "description": "Thrown when options array is empty, prompt_message is missing, or parameters have invalid types"
+            }
+        ]
+    },
+    {
+        "name": "request_user_choice",
+        "description": "Presents multiple options to a user and requests a selection.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of options presented to the user."
+                },
+                "prompt": {
+                    "type": "string",
+                    "description": "Message prompting the user to choose from the options."
+                },
+                "allow_multiple": {
+                    "type": "boolean",
+                    "description": "Whether the user can select multiple options. Defaults to false if not provided."
+                },
+                "timeout": {
+                    "type": "number",
+                    "description": "Maximum time to wait for a response in seconds. If not provided, the tool will wait indefinitely."
+                },
+                "default_option": {
+                    "type": "string",
+                    "description": "The default option to select if the user does not respond. Must be one of the options provided."
+                }
+            },
+            "required": [
+                "options"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'selection' (array of selected options), 'status' (string: 'success', 'timeout', or 'error'), and 'error_message' (string if status is 'error')."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidOptionsException",
+                "description": "The 'options' parameter must be a non-empty array of strings."
+            },
+            {
+                "name": "InvalidDefaultOptionException",
+                "description": "The 'default_option' must be one of the options provided."
+            },
+            {
+                "name": "InvalidTimeoutException",
+                "description": "The 'timeout' parameter must be a non-negative number."
+            }
+        ]
+    }
+]

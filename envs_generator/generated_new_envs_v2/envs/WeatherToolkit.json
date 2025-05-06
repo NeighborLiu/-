@@ -1,0 +1,119 @@
+[
+    {
+        "name": "get_current_weather",
+        "description": "Fetches the current weather data for a specified city using the OpenWeatherMap API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "The name of the city to fetch weather data for."
+                },
+                "api_key": {
+                    "type": "string",
+                    "description": "The OpenWeatherMap API key required for authentication."
+                },
+                "units": {
+                    "type": "string",
+                    "description": "The units for temperature and speed (either 'metric' or 'imperial')."
+                }
+            },
+            "required": [
+                "city",
+                "api_key"
+            ]
+        },
+        "returns": [
+            {
+                "name": "weather_data",
+                "type": "object",
+                "description": "An object containing weather details such as temperature (number), humidity (integer), wind_speed (number), weather_description (string), and units (string indicating the unit system used)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAPIKeyException",
+                "description": "Thrown when the provided API key is invalid or not authorized to access the OpenWeatherMap API."
+            },
+            {
+                "name": "CityNotFoundException",
+                "description": "Thrown when the specified city cannot be found in the OpenWeatherMap database."
+            }
+        ]
+    },
+    {
+        "name": "get_weather_forecast",
+        "description": "Fetches a 5-day weather forecast for a specified city using the OpenWeatherMap API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "The name of the city to retrieve the forecast for."
+                },
+                "days": {
+                    "type": "integer",
+                    "description": "Number of days to include in the forecast (default is 5)."
+                }
+            },
+            "required": [
+                "city"
+            ]
+        },
+        "returns": [
+            {
+                "name": "forecast",
+                "type": "array",
+                "description": "Array of daily weather forecasts. Each item contains 'day' (date string), 'min_temp' (float), 'max_temp' (float), and 'conditions' (string describing weather conditions)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidCityException",
+                "description": "The specified city could not be found in the OpenWeatherMap database."
+            },
+            {
+                "name": "ServiceUnavailableException",
+                "description": "The OpenWeatherMap API is temporarily unavailable or returned an unexpected response."
+            }
+        ]
+    },
+    {
+        "name": "get_weather_alerts",
+        "description": "Fetch active weather alerts for a specified city and country using the OpenWeatherMap API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "The name of the city to check for weather alerts."
+                },
+                "country": {
+                    "type": "string",
+                    "description": "The two-letter country code (e.g., US, GB) associated with the city."
+                }
+            },
+            "required": [
+                "city",
+                "country"
+            ]
+        },
+        "returns": [
+            {
+                "name": "alerts",
+                "type": "array",
+                "description": "A list of weather alerts containing details like type, description, regions affected, and severity."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidLocationException",
+                "description": "Thrown when the specified city and country combination is not found in the OpenWeatherMap database."
+            },
+            {
+                "name": "ApiRateLimitException",
+                "description": "Thrown when the API rate limit is exceeded for the current session."
+            }
+        ]
+    }
+]

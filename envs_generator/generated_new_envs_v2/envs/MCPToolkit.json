@@ -1,0 +1,239 @@
+[
+    {
+        "name": "invoke_external_tool",
+        "description": "Invokes an external tool using the Model Context Protocol (MCP) and returns the response.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "tool_name": {
+                    "type": "string",
+                    "description": "The name of the external tool to be invoked."
+                },
+                "function": {
+                    "type": "string",
+                    "description": "The specific function or method within the tool to execute."
+                },
+                "arguments": {
+                    "type": "object",
+                    "description": "A key-value map of arguments for the function. Optional if the function does not require parameters."
+                }
+            },
+            "required": [
+                "tool_name",
+                "function"
+            ]
+        },
+        "returns": [
+            {
+                "name": "response",
+                "type": "object",
+                "description": "Contains the result of the function execution. Includes 'result' (any type) if successful, or 'error_message' (string) if an error occurred."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "ToolNotFoundException",
+                "description": "The specified tool does not exist or is not registered in the MCP system."
+            },
+            {
+                "name": "FunctionExecutionException",
+                "description": "The function execution failed due to invalid arguments, tool unavailability, or runtime errors."
+            }
+        ]
+    },
+    {
+        "name": "register_external_service",
+        "description": "Register a new external service with the Model Context Protocol (MCP) for future tool invocations.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "service_name": {
+                    "type": "string",
+                    "description": "Unique name identifier for the external service."
+                },
+                "api_endpoint": {
+                    "type": "string",
+                    "description": "Base API endpoint URL for the external service."
+                },
+                "auth_credentials": {
+                    "type": "object",
+                    "description": "Authentication credentials required to interact with the service",
+                    "properties": {
+                        "api_key": {
+                            "type": "string",
+                            "description": "API key for authentication"
+                        },
+                        "token": {
+                            "type": "string",
+                            "description": "Bearer token for authentication"
+                        }
+                    },
+                    "required": [
+                        "api_key",
+                        "token"
+                    ]
+                },
+                "timeout_seconds": {
+                    "type": "number",
+                    "description": "Maximum time in seconds to wait for a response from the service (default 30)"
+                }
+            },
+            "required": [
+                "service_name",
+                "api_endpoint"
+            ]
+        },
+        "returns": [
+            {
+                "name": "registration_status",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'service_id' (string if successful), and 'error_code' (string if failed)"
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "DuplicateServiceError",
+                "description": "Thrown when attempting to register a service with a name that already exists"
+            },
+            {
+                "name": "InvalidAuthError",
+                "description": "Thrown when provided authentication credentials are missing or invalid"
+            },
+            {
+                "name": "MalformedEndpointError",
+                "description": "Thrown when the provided API endpoint is not a valid URL format"
+            }
+        ]
+    },
+    {
+        "name": "query_external_data",
+        "description": "Query data from a registered external service using the Model Context Protocol (MCP).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "service_id": {
+                    "type": "string",
+                    "description": "The unique identifier of the external service to query."
+                },
+                "query_params": {
+                    "type": "object",
+                    "description": "A dictionary of query parameters required by the service."
+                },
+                "auth_token": {
+                    "type": "string",
+                    "description": "An optional authentication token for accessing the service."
+                }
+            },
+            "required": [
+                "service_id",
+                "query_params"
+            ]
+        },
+        "returns": [
+            {
+                "name": "response",
+                "type": "object",
+                "description": "An object containing 'data' (the result from the service), 'status' (string indicating success/failure), and 'error_message' (if status is failure)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidServiceIDException",
+                "description": "The provided service_id does not correspond to a registered external service."
+            },
+            {
+                "name": "AuthenticationException",
+                "description": "The authentication token is missing, invalid, or insufficient for the requested service."
+            },
+            {
+                "name": "InvalidQueryParameterException",
+                "description": "The query_params provided are invalid or missing required parameters for the service."
+            }
+        ]
+    },
+    {
+        "name": "manage_external_authentication",
+        "description": "Manages authentication and credentials for external services via the Model Context Protocol (MCP), allowing actions like adding, updating, or removing credentials.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "type": "string",
+                    "description": "The action to perform (e.g., 'add', 'update', 'remove', or 'validate')."
+                },
+                "service_name": {
+                    "type": "string",
+                    "description": "The name of the external service requiring authentication."
+                },
+                "credentials": {
+                    "type": "object",
+                    "description": "A key-value map of authentication credentials (e.g., username, API key, or OAuth parameters)."
+                },
+                "token": {
+                    "type": "string",
+                    "description": "An authentication token for the service (alternative to credentials)."
+                }
+            },
+            "required": [
+                "action",
+                "service_name"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'message' (string describing outcome), and 'data' (any additional details, like a token or error code)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "ServiceNotFoundException",
+                "description": "The specified service is not registered in the MCP system."
+            },
+            {
+                "name": "InvalidCredentialsException",
+                "description": "Provided credentials or token are invalid for the service."
+            },
+            {
+                "name": "ActionNotSupportedException",
+                "description": "The requested action is not supported by this tool or service."
+            }
+        ]
+    },
+    {
+        "name": "list_registered_services",
+        "description": "Lists all registered external services in the MCPToolkit, optionally filtered by type or status.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "service_type": {
+                    "type": "string",
+                    "description": "Optional filter to list services of a specific type (e.g., 'API', 'Database')."
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Optional filter to list services by operational status (e.g., 'active', 'inactive')."
+                }
+            },
+            "required": []
+        },
+        "returns": [
+            {
+                "name": "services",
+                "type": "array",
+                "description": "An array of objects representing registered services. Each object contains properties like 'name', 'type', 'status', and 'last_updated_time'."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "NoServicesFoundException",
+                "description": "Thrown when no services match the provided filters, or no services are registered."
+            },
+            {
+                "name": "InvalidFilterException",
+                "description": "Thrown if the provided 'service_type' or 'status' values are invalid or not recognized."
+            }
+        ]
+    }
+]

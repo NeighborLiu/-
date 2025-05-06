@@ -1,0 +1,146 @@
+[
+    {
+        "name": "fetch_real_time_data",
+        "description": "Fetches real-time data and AI recommendations for specified verticals such as News, Finance, Stock Market, Sports, and Weather using the Dappier API.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "vertical": {
+                    "type": "string",
+                    "description": "The vertical to query (e.g., 'News', 'Finance', 'Stock Market', 'Sports', 'Weather')."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "Optional specific query term (e.g., stock ticker, team name)."
+                },
+                "time_frame": {
+                    "type": "string",
+                    "description": "Time frame for data (e.g., 'latest', '24h', 'week')."
+                }
+            },
+            "required": [
+                "vertical"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'data' (object) with real-time information and 'recommendations' (array of objects) with AI-driven suggestions related to the query."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVerticalException",
+                "description": "The specified vertical is not supported by the Dappier API."
+            },
+            {
+                "name": "APIServiceUnavailableException",
+                "description": "The Dappier API is currently unavailable or returned an unexpected error."
+            },
+            {
+                "name": "NoDataAvailableException",
+                "description": "No real-time data or recommendations were found matching the query parameters."
+            }
+        ]
+    },
+    {
+        "name": "get_ai_recommendations",
+        "description": "Retrieves AI-generated recommendations based on real-time data from specified verticals such as News, Finance, Sports, and Weather.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "vertical": {
+                    "type": "string",
+                    "description": "The data vertical to fetch recommendations from (e.g., 'Finance', 'Sports', 'News')."
+                },
+                "query": {
+                    "type": "string",
+                    "description": "(Optional) A search term to refine recommendations (e.g., 'Apple stock' or 'NBA scores')."
+                },
+                "time_frame": {
+                    "type": "integer",
+                    "description": "(Optional) Number of hours to look back for real-time data (default is 24)."
+                },
+                "max_results": {
+                    "type": "integer",
+                    "description": "(Optional) Maximum number of recommendations to return (default is 5)."
+                }
+            },
+            "required": [
+                "vertical"
+            ]
+        },
+        "returns": [
+            {
+                "name": "recommendations",
+                "type": "array",
+                "description": "An array of recommendation objects containing 'title', 'content', 'source', and 'vertical' fields for each item."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVerticalException",
+                "description": "Thrown when the specified 'vertical' parameter is not supported or invalid."
+            },
+            {
+                "name": "APIServiceError",
+                "description": "Thrown if the Dappier API service is unavailable or returns an error."
+            }
+        ]
+    },
+    {
+        "name": "get_vertical_insights",
+        "description": "Fetches real-time data and AI-generated insights for a specific query within a chosen vertical (e.g., News, Finance, Sports).",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search term or topic to analyze (e.g., 'Apple earnings', 'World Cup final')."
+                },
+                "vertical": {
+                    "type": "string",
+                    "description": "The domain to focus on (e.g., 'News', 'Finance', 'Stock Market', 'Sports', 'Weather')."
+                },
+                "time_range": {
+                    "type": "string",
+                    "description": "Time frame for real-time data (options: 'latest', '24h', '7d'). Defaults to 'latest'."
+                },
+                "include_recommendations": {
+                    "type": "boolean",
+                    "description": "Whether to include AI-driven recommendations (e.g., buy/sell signals for stocks, optimal strategies for sports)."
+                },
+                "user_preferences": {
+                    "type": "object",
+                    "description": "User-specific parameters (e.g., {'risk_tolerance': 'high'} for finance, {'sport': 'soccer'} for sports)."
+                }
+            },
+            "required": [
+                "query",
+                "vertical"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'real_time_data' (array of data points like headlines/stock prices) and 'ai_recommendations' (array of suggestions with confidence scores). Each data point includes source, content, and timestamp."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidVerticalException",
+                "description": "The specified vertical is unsupported (e.g., 'Movies' is not a valid vertical)."
+            },
+            {
+                "name": "NoDataAvailableException",
+                "description": "No real-time data exists for the query within the selected vertical."
+            },
+            {
+                "name": "APIRequestException",
+                "description": "The Dappier API returned an error (e.g., authentication failure or rate limit exceeded)."
+            }
+        ]
+    }
+]

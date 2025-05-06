@@ -1,0 +1,229 @@
+[
+    {
+        "name": "validate_openapi_spec",
+        "description": "Validates an OpenAPI specification document against the official OpenAPI schema to ensure syntactic and semantic correctness.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "spec_content": {
+                    "type": "string",
+                    "description": "The raw OpenAPI specification content in JSON or YAML format."
+                }
+            },
+            "required": [
+                "spec_content"
+            ]
+        },
+        "returns": [
+            {
+                "name": "validation_result",
+                "type": "object",
+                "description": "An object containing 'valid' (boolean indicating validation success), 'errors' (array of validation error messages), and 'warnings' (array of non-critical issues)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSpecFormatException",
+                "description": "Thrown when the 'spec_content' is not valid JSON/YAML or cannot be parsed."
+            },
+            {
+                "name": "ValidationFailedException",
+                "description": "Thrown when the OpenAPI spec violates the official schema requirements (e.g., missing required fields)."
+            }
+        ]
+    },
+    {
+        "name": "generate_client_code",
+        "description": "Generate client code for a specified programming language based on an OpenAPI specification.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "spec": {
+                    "type": "string",
+                    "description": "The OpenAPI specification content or path to the specification file."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "The target programming language for code generation (e.g., 'python', 'javascript', 'typescript')."
+                },
+                "options": {
+                    "type": "object",
+                    "properties": {
+                        "includeExamples": {
+                            "type": "boolean",
+                            "description": "Whether to include example values in generated code (default: false)."
+                        },
+                        "addDocs": {
+                            "type": "boolean",
+                            "description": "Whether to add documentation comments to the generated code (default: true)."
+                        },
+                        "outputFormat": {
+                            "type": "string",
+                            "description": "Optional format specifier for the generated code (e.g., 'async' for asynchronous code)."
+                        }
+                    },
+                    "description": "Optional configuration options for code generation."
+                }
+            },
+            "required": [
+                "spec",
+                "language"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains generated code (string), success status (boolean), and error message (string if failed)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSpecException",
+                "description": "The provided OpenAPI specification is invalid or malformed."
+            },
+            {
+                "name": "UnsupportedLanguageException",
+                "description": "The requested programming language is not supported by the code generator."
+            },
+            {
+                "name": "GenerationFailedException",
+                "description": "An error occurred during code generation (e.g., missing required parameters in the spec)."
+            }
+        ]
+    },
+    {
+        "name": "call_api_endpoint",
+        "description": "Execute an HTTP request based on an OpenAPI specification to interact with a REST API endpoint.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "openapi_spec": {
+                    "type": "string",
+                    "description": "The OpenAPI specification in JSON format."
+                },
+                "path": {
+                    "type": "string",
+                    "description": "The API endpoint path (e.g., '/users/{id}')"
+                },
+                "method": {
+                    "type": "string",
+                    "description": "The HTTP method (e.g., 'GET', 'POST')"
+                },
+                "path_parameters": {
+                    "type": "object",
+                    "description": "Key-value pairs for path parameters (e.g., {'id': '123'})"
+                },
+                "query_parameters": {
+                    "type": "object",
+                    "description": "Key-value pairs for query parameters (e.g., {'page': '2'})"
+                },
+                "headers": {
+                    "type": "object",
+                    "description": "HTTP headers as key-value pairs"
+                },
+                "request_body": {
+                    "type": "object",
+                    "description": "The request body, typically as a JSON object for POST/PUT requests"
+                }
+            },
+            "required": [
+                "openapi_spec",
+                "path",
+                "method"
+            ]
+        },
+        "returns": [
+            {
+                "name": "response",
+                "type": "object",
+                "description": "The HTTP response containing 'status_code' (integer), 'headers' (object), and 'body' (object|string) based on the API's response."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "EndpointNotFoundException",
+                "description": "The specified path and method combination does not exist in the provided OpenAPI specification."
+            },
+            {
+                "name": "InvalidSpecException",
+                "description": "The provided OpenAPI specification is invalid or malformed."
+            },
+            {
+                "name": "NetworkException",
+                "description": "A network error occurred while attempting to send the HTTP request."
+            }
+        ]
+    },
+    {
+        "name": "parse_openapi_spec",
+        "description": "Parses an OpenAPI specification into a structured format for further processing.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "openapi_spec": {
+                    "type": "string",
+                    "description": "The path to the OpenAPI specification file or the raw JSON/YAML content to parse."
+                }
+            },
+            "required": [
+                "openapi_spec"
+            ]
+        },
+        "returns": [
+            {
+                "name": "parsed_spec",
+                "type": "object",
+                "description": "A structured representation of the OpenAPI specification, including endpoints, operations, parameters, and other components."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSpecException",
+                "description": "The provided OpenAPI specification is invalid (e.g., incorrect format, missing required fields, or invalid syntax)."
+            }
+        ]
+    },
+    {
+        "name": "generate_api_documentation",
+        "description": "Generates human-readable API documentation from an OpenAPI specification.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "openapi_spec": {
+                    "type": "string",
+                    "description": "The OpenAPI specification in JSON or YAML format."
+                },
+                "format": {
+                    "type": "string",
+                    "description": "The output format. Supported values: 'markdown', 'html', or 'pdf'."
+                },
+                "include_examples": {
+                    "type": "boolean",
+                    "description": "Whether to include example requests/responses in the documentation."
+                }
+            },
+            "required": [
+                "openapi_spec",
+                "format"
+            ]
+        },
+        "returns": [
+            {
+                "name": "documentation",
+                "type": "string",
+                "description": "The generated API documentation content in the requested format."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidFormatException",
+                "description": "The requested format is not supported (must be markdown/html/pdf)."
+            },
+            {
+                "name": "InvalidOpenAPISpecException",
+                "description": "The provided OpenAPI specification is invalid or cannot be parsed."
+            }
+        ]
+    }
+]

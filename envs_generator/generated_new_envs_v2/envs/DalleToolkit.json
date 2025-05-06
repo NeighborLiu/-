@@ -1,0 +1,254 @@
+[
+    {
+        "name": "generate_image",
+        "description": "Generate an image based on a text prompt using OpenAI's DALL-E model.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "The text prompt describing the desired image."
+                },
+                "n": {
+                    "type": "integer",
+                    "description": "Number of images to generate (1-10). Default is 1."
+                },
+                "size": {
+                    "type": "string",
+                    "description": "Resolution of the image (e.g., '1024x1024'). Valid options are '256x256', '512x512', or '1024x1024'. Default is '1024x1024'."
+                },
+                "response_format": {
+                    "type": "string",
+                    "description": "Format of the image data. Either 'url' (publicly accessible URL) or 'b64_json' (base64-encoded string). Default is 'url'."
+                }
+            },
+            "required": [
+                "prompt"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'images' (array of URLs or base64 strings), 'success' (boolean), and 'error_message' (string if not successful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidPromptException",
+                "description": "The 'prompt' is empty, exceeds the maximum length, or contains invalid characters."
+            },
+            {
+                "name": "InvalidParameterException",
+                "description": "The 'n' is outside 1-10, 'size' is not a valid resolution, or 'response_format' is not 'url' or 'b64_json'."
+            },
+            {
+                "name": "APICommunicationException",
+                "description": "Failed to communicate with the OpenAI API due to network issues or API key errors."
+            }
+        ]
+    },
+    {
+        "name": "generate_image_batch",
+        "description": "Generate multiple images based on a text prompt using the DALL-E model.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "Text prompt describing the desired image."
+                },
+                "n": {
+                    "type": "integer",
+                    "description": "Number of images to generate (minimum 1, maximum 10)."
+                },
+                "size": {
+                    "type": "string",
+                    "description": "Image size in pixels, formatted as 'widthxheight' (e.g., '1024x1024'). Valid sizes are 256x256, 512x512, or 1024x1024."
+                },
+                "response_format": {
+                    "type": "string",
+                    "description": "Format of the response. Either 'url' (returns image URLs) or 'b64_json' (returns base64-encoded images in JSON). Defaults to 'url'."
+                }
+            },
+            "required": [
+                "prompt",
+                "size"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'images' (array of image URLs or base64 data), 'success' (boolean indicating success), and 'error' (string if an error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "The 'size' parameter is invalid or not one of the allowed values (256x256, 512x512, 1024x1024)."
+            },
+            {
+                "name": "InvalidRequestException",
+                "description": "The 'prompt' is empty or exceeds the maximum allowed length (e.g., 1000 characters)."
+            },
+            {
+                "name": "RateLimitExceededError",
+                "description": "The number of requests exceeds the API's rate limit."
+            }
+        ]
+    },
+    {
+        "name": "generate_image_variations",
+        "description": "Generates multiple variations of an image based on a given prompt and parameters.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "prompt": {
+                    "type": "string",
+                    "description": "The main text prompt describing the desired image."
+                },
+                "variations_count": {
+                    "type": "integer",
+                    "description": "The number of image variations to generate."
+                },
+                "creativity_level": {
+                    "type": "number",
+                    "description": "A value between 0 and 1 indicating the creativity level of variations. Higher values produce more diverse results."
+                },
+                "excluded_elements": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Elements to exclude from the generated images."
+                    },
+                    "description": "List of elements to avoid in the images."
+                }
+            },
+            "required": [
+                "prompt",
+                "variations_count"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'images' (array of URLs to the generated images), 'success' (boolean), and 'error_message' (string if any)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidParameterException",
+                "description": "Thrown if 'creativity_level' is not between 0 and 1, or 'variations_count' is negative."
+            },
+            {
+                "name": "InvalidPromptException",
+                "description": "Thrown if the provided 'prompt' is empty or contains invalid content."
+            }
+        ]
+    },
+    {
+        "name": "edit_image",
+        "description": "Modify an existing image based on a text prompt using DALL-E's capabilities.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "type": "string",
+                    "description": "Path or URL of the source image to be edited."
+                },
+                "prompt": {
+                    "type": "string",
+                    "description": "Text description of the desired edits to apply to the image."
+                },
+                "mask": {
+                    "type": "string",
+                    "description": "(Optional) Path or URL to a binary mask image defining the region to edit."
+                },
+                "size": {
+                    "type": "object",
+                    "description": "Desired output image dimensions (width and height in pixels).",
+                    "properties": {
+                        "width": {
+                            "type": "integer",
+                            "description": "Target width of the edited image."
+                        },
+                        "height": {
+                            "type": "integer",
+                            "description": "Target height of the edited image."
+                        }
+                    },
+                    "required": [
+                        "width",
+                        "height"
+                    ]
+                }
+            },
+            "required": [
+                "image",
+                "prompt"
+            ]
+        },
+        "returns": [
+            {
+                "name": "edited_image",
+                "type": "string",
+                "description": "URL or path to the generated edited image file."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidImageException",
+                "description": "The provided image path/URL is invalid, corrupted, or not compatible with DALL-E processing."
+            },
+            {
+                "name": "IncompatibleDimensionsException",
+                "description": "The requested 'size' dimensions are out of DALL-E's supported range (e.g., exceeding maximum pixel limits)."
+            }
+        ]
+    },
+    {
+        "name": "upscale_image",
+        "description": "Upscale the resolution of an existing image using DALL-E's enhancement capabilities.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "image_base64": {
+                    "type": "string",
+                    "description": "Base64-encoded string of the input image to be upscaled."
+                },
+                "target_width": {
+                    "type": "integer",
+                    "description": "The desired width in pixels of the upscaled image."
+                },
+                "target_height": {
+                    "type": "integer",
+                    "description": "The desired height in pixels of the upscaled image."
+                }
+            },
+            "required": [
+                "image_base64",
+                "target_width",
+                "target_height"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'image_base64' (string, the upscaled image in base64 format), 'success' (boolean, indicates if the operation was successful), and 'error_message' (string, provides details if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidImageFormatException",
+                "description": "The input image's base64 string is invalid or cannot be decoded."
+            },
+            {
+                "name": "InvalidDimensionsException",
+                "description": "The target_width or target_height parameters are non-positive, or exceed the maximum allowed dimensions."
+            }
+        ]
+    }
+]

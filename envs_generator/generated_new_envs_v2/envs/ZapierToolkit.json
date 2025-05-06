@@ -1,0 +1,174 @@
+[
+    {
+        "name": "execute_zapier_action",
+        "description": "Executes a Zapier NLA API action based on a natural language command to automate workflows.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "description": "The natural language command describing the desired Zapier action (e.g., 'create a Google Calendar event')."
+                },
+                "options": {
+                    "type": "object",
+                    "description": "Optional parameters for the Zapier API request",
+                    "properties": {
+                        "timeout": {
+                            "type": "number",
+                            "description": "Maximum time in seconds to wait for API response"
+                        },
+                        "parameters": {
+                            "type": "object",
+                            "description": "Additional key-value pairs to pass to the Zapier action"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "command"
+            ]
+        },
+        "returns": [
+            {
+                "name": "response",
+                "type": "object",
+                "description": "API response containing 'data' (result of the action), 'status' (HTTP status code), and 'error' (error details if failed)"
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidCommandException",
+                "description": "The natural language command is malformed or cannot be mapped to a valid Zapier action"
+            },
+            {
+                "name": "APIRequestFailed",
+                "description": "Zapier API returned an error (e.g., authentication failed, invalid parameters)"
+            }
+        ]
+    },
+    {
+        "name": "invoke_zapier_workflow",
+        "description": "Executes a Zapier workflow using natural language commands to trigger specific actions and automate tasks across integrated apps.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "description": "Natural language instruction describing the desired Zapier action (e.g., 'Create a Google Calendar event for tomorrow at 10 AM')."
+                },
+                "parameters": {
+                    "type": "object",
+                    "description": "Optional custom parameters to override values in the natural language command (e.g., {\"event_time\": \"14:00\"})."
+                },
+                "zap_id": {
+                    "type": "string",
+                    "description": "Unique identifier of a specific Zap to execute (optional for predefined workflows)."
+                }
+            },
+            "required": [
+                "command"
+            ]
+        },
+        "returns": [
+            {
+                "name": "execution_result",
+                "type": "object",
+                "description": "Contains 'status' (string: success/failure), 'zap_response' (raw API response data), and 'error_details' (if applicable)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "AmbiguousCommandException",
+                "description": "The natural language command could not be mapped to a specific Zapier action or app."
+            },
+            {
+                "name": "ZapierAPIException",
+                "description": "Error occurred during communication with Zapier's NLA API (e.g., authentication failure, rate limit exceeded)."
+            }
+        ]
+    },
+    {
+        "name": "parse_natural_language_action",
+        "description": "Parses natural language commands into structured actions compatible with Zapier's NLA API for workflow automation.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string",
+                    "description": "The natural language instruction to parse (e.g., 'Send an email to John about the meeting')."
+                },
+                "user_id": {
+                    "type": "string",
+                    "description": "(Optional) Unique identifier for the user associated with the command."
+                },
+                "context": {
+                    "type": "object",
+                    "description": "(Optional) Additional metadata to refine the parsing (e.g., {'account': 'work', 'priority': 'high'})."
+                }
+            },
+            "required": [
+                "command"
+            ]
+        },
+        "returns": [
+            {
+                "name": "structured_action",
+                "type": "object",
+                "description": "Parsed action containing 'action_type' (string), 'parameters' (object), and 'confidence_score' (number between 0-1 indicating parsing certainty)."
+            },
+            {
+                "name": "error_details",
+                "type": "object",
+                "description": "Error information if parsing failed, containing 'code' (string) and 'message' (string)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "AmbiguousCommandException",
+                "description": "Thrown when the natural language command cannot be unambiguously mapped to a specific Zapier action."
+            },
+            {
+                "name": "UnsupportedActionException",
+                "description": "Thrown when the command refers to an action not supported by the user's Zapier account or NLA API."
+            }
+        ]
+    },
+    {
+        "name": "create_zapier_nla_workflow",
+        "description": "Create a Zapier workflow using a natural language command to define triggers and actions.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "natural_language_command": {
+                    "type": "string",
+                    "description": "A natural language description of the workflow (e.g., 'When a new email arrives in Gmail, send a Slack notification')."
+                },
+                "auth_token": {
+                    "type": "string",
+                    "description": "The user's authentication token for accessing Zapier's NLA API."
+                }
+            },
+            "required": [
+                "natural_language_command",
+                "auth_token"
+            ]
+        },
+        "returns": [
+            {
+                "name": "workflow_status",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'workflow_id' (string, if created), and 'error_details' (string, if failed)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidCommandFormatException",
+                "description": "The natural language command is malformed or cannot be parsed into a valid Zapier workflow structure."
+            },
+            {
+                "name": "AuthenticationFailureException",
+                "description": "The provided auth_token is invalid or lacks sufficient permissions to create workflows via the Zapier NLA API."
+            }
+        ]
+    }
+]

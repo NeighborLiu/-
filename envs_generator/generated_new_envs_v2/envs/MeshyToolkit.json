@@ -1,0 +1,175 @@
+[
+    {
+        "name": "load_mesh",
+        "description": "Loads a 3D mesh from a file into memory.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The path to the mesh file."
+                },
+                "format": {
+                    "type": "string",
+                    "description": "The file format (e.g., 'obj', 'stl', 'ply'). Defaults to auto-detection based on file extension."
+                }
+            },
+            "required": [
+                "file_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "mesh_data",
+                "type": "object",
+                "description": "The loaded mesh data, containing vertices (array of 3D coordinates) and face indices (array of vertex indices defining polygons)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "FileNotFoundError",
+                "description": "The specified file does not exist at the provided file_path."
+            },
+            {
+                "name": "InvalidFormatException",
+                "description": "The file format is unsupported, or the mesh data is corrupted/invalid."
+            }
+        ]
+    },
+    {
+        "name": "compute_mesh_volume",
+        "description": "Calculate the volume of a 3D mesh based on its vertices and faces.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "mesh": {
+                    "type": "object",
+                    "description": "The 3D mesh data object containing vertices (array of 3D coordinates) and faces (indices referencing the vertices)."
+                }
+            },
+            "required": [
+                "mesh"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'volume' (number, the computed volume), 'success' (boolean indicating success), and 'error_message' (string if applicable)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMeshException",
+                "description": "The provided mesh data is invalid (e.g., missing vertices or faces, non-manifold geometry, or inconsistent face definitions)."
+            }
+        ]
+    },
+    {
+        "name": "simplify_mesh",
+        "description": "Simplify a 3D mesh to reduce the number of vertices or triangles while preserving the overall shape.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "mesh_data": {
+                    "type": "object",
+                    "description": "The input mesh data structure (e.g., loaded from load_mesh)."
+                },
+                "target_count": {
+                    "type": "integer",
+                    "description": "The desired number of vertices or triangles in the simplified mesh."
+                },
+                "ratio": {
+                    "type": "number",
+                    "description": "The ratio (between 0.0 and 1.0) to reduce the mesh by. For example, 0.5 aims for half the original size."
+                }
+            },
+            "required": [
+                "mesh_data"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains the simplified mesh data, vertex count, and triangle count. The object has 'simplified_mesh', 'vertex_count', and 'triangle_count' properties."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMeshDataException",
+                "description": "The provided mesh_data is not a valid mesh structure."
+            },
+            {
+                "name": "InvalidSimplifyParameterException",
+                "description": "Either target_count or ratio must be provided (but not both), or parameters are invalid (e.g., ratio outside 0.0-1.0 range)."
+            }
+        ]
+    },
+    {
+        "name": "compute_mesh_surface_area",
+        "description": "Calculate the surface area of a 3D mesh.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "mesh": {
+                    "type": "object",
+                    "description": "The 3D mesh object to calculate the surface area for."
+                }
+            },
+            "required": [
+                "mesh"
+            ]
+        },
+        "returns": [
+            {
+                "name": "surface_area",
+                "type": "number",
+                "description": "The calculated surface area of the mesh."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMeshException",
+                "description": "The provided mesh is invalid or does not contain the necessary data to compute surface area."
+            }
+        ]
+    },
+    {
+        "name": "repair_mesh",
+        "description": "Repair common issues in a 3D mesh such as fixing normals, filling holes, and ensuring manifold geometry.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "mesh": {
+                    "type": "object",
+                    "description": "The 3D mesh data to be repaired."
+                },
+                "fill_holes": {
+                    "type": "boolean",
+                    "description": "Whether to fill holes in the mesh. Defaults to true."
+                },
+                "fix_normals": {
+                    "type": "boolean",
+                    "description": "Whether to recalculate and orient normals correctly. Defaults to true."
+                }
+            },
+            "required": [
+                "mesh"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'repaired_mesh' (the repaired 3D mesh data) and 'repair_report' (an array of strings detailing the repairs performed)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidMeshException",
+                "description": "The input mesh is invalid, empty, or cannot be processed."
+            }
+        ]
+    }
+]

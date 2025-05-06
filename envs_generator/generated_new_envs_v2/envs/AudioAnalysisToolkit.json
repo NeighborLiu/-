@@ -1,0 +1,243 @@
+[
+    {
+        "name": "analyze_audio",
+        "description": "Transcribes the provided audio file and answers a specific question about its content.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "audio_path": {
+                    "type": "string",
+                    "description": "Path to the audio file to be analyzed."
+                },
+                "question": {
+                    "type": "string",
+                    "description": "The question to answer based on the audio content."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Language of the audio content (optional, default: 'en')."
+                }
+            },
+            "required": [
+                "audio_path",
+                "question"
+            ]
+        },
+        "returns": [
+            {
+                "name": "analysis_result",
+                "type": "object",
+                "description": "Contains 'transcription' (string) of the audio content and 'answer' (string) to the provided question."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAudioPathException",
+                "description": "The provided audio path is invalid, inaccessible, or does not exist."
+            },
+            {
+                "name": "AudioProcessingException",
+                "description": "An error occurred during audio processing, such as unsupported format, transcription failure, or question analysis error."
+            }
+        ]
+    },
+    {
+        "name": "transcribe_audio",
+        "description": "Transcribes audio content into text and provides confidence scores for the transcription.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "audio_path": {
+                    "type": "string",
+                    "description": "The file path or URL of the audio to transcribe."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "The language code of the audio content (e.g., 'en' for English, 'es' for Spanish)."
+                },
+                "output_format": {
+                    "type": "string",
+                    "description": "The desired output format (either 'json' for structured data or 'text' for plain text)."
+                }
+            },
+            "required": [
+                "audio_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "transcription_result",
+                "type": "object",
+                "description": "An object containing 'text' (string: the transcribed text), 'confidence_score' (number between 0 and 1: the model's confidence in the transcription), and 'format' (string: the output format used)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAudioPathException",
+                "description": "The provided audio path is invalid, inaccessible, or not in a supported format (e.g., .wav, .mp3)."
+            },
+            {
+                "name": "UnsupportedLanguageException",
+                "description": "The specified language is not supported by the transcription service."
+            },
+            {
+                "name": "TranscriptionErrorException",
+                "description": "An error occurred during the transcription process, such as model failure or audio corruption."
+            }
+        ]
+    },
+    {
+        "name": "answer_audio_question",
+        "description": "Answers a question based on the content of an audio file.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "audio_path": {
+                    "type": "string",
+                    "description": "The path to the audio file to analyze."
+                },
+                "question": {
+                    "type": "string",
+                    "description": "The question to answer about the audio content."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "The language of the audio content (e.g., 'en' for English)."
+                }
+            },
+            "required": [
+                "audio_path",
+                "question"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'answer' (string, the answer to the question) and 'confidence' (number between 0 and 1 indicating the model's confidence in the answer)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAudioException",
+                "description": "The audio file is corrupted or in an unsupported format."
+            },
+            {
+                "name": "EmptyQuestionException",
+                "description": "The question parameter is empty or contains only whitespace."
+            },
+            {
+                "name": "ProcessingErrorException",
+                "description": "An unexpected error occurred during audio analysis."
+            }
+        ]
+    },
+    {
+        "name": "summarize_audio",
+        "description": "Generates a textual summary of the content in an audio file.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "audio_path": {
+                    "type": "string",
+                    "description": "The file path or URL of the audio to summarize."
+                },
+                "duration": {
+                    "type": "number",
+                    "description": "Optional duration (in seconds) to limit the summary to the first N seconds of audio."
+                },
+                "include_timestamps": {
+                    "type": "boolean",
+                    "description": "Whether to include timestamps in the summary (marks key points in the audio)."
+                }
+            },
+            "required": [
+                "audio_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "summary",
+                "type": "string",
+                "description": "The generated text summary of the audio content."
+            },
+            {
+                "name": "timestamps",
+                "type": "array",
+                "description": "Array of timestamps (seconds) marking key points in the audio, if 'include_timestamps' was enabled."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAudioPathException",
+                "description": "The provided 'audio_path' is invalid, inaccessible, or does not point to an audio file."
+            },
+            {
+                "name": "UnsupportedAudioFormatException",
+                "description": "The audio format is not supported (e.g., not WAV, MP3, or FLAC)."
+            },
+            {
+                "name": "AudioProcessingException",
+                "description": "An error occurred during audio analysis (e.g., silence detection failure or corrupted audio data)."
+            }
+        ]
+    },
+    {
+        "name": "enhance_audio",
+        "description": "Enhances the quality of an audio file by applying noise reduction, normalization, or other audio processing techniques.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "audio_path": {
+                    "type": "string",
+                    "description": "The path to the input audio file."
+                },
+                "noise_reduction": {
+                    "type": "boolean",
+                    "description": "Whether to apply noise reduction. Defaults to true if not specified."
+                },
+                "normalization": {
+                    "type": "boolean",
+                    "description": "Whether to normalize the audio volume. Defaults to false."
+                },
+                "target_level": {
+                    "type": "number",
+                    "description": "The target volume level in dB for normalization. Required if normalization is enabled."
+                },
+                "bitrate": {
+                    "type": "integer",
+                    "description": "The desired bitrate in kbps for the output file. Must be a positive integer."
+                },
+                "output_format": {
+                    "type": "string",
+                    "description": "The desired output format (e.g., 'mp3', 'wav'). Defaults to the input file's format."
+                }
+            },
+            "required": [
+                "audio_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "enhanced_audio_path",
+                "type": "string",
+                "description": "The path to the enhanced audio file."
+            },
+            {
+                "name": "processing_summary",
+                "type": "object",
+                "description": "Summary of the processing steps applied, including parameters used and any metrics like SNR improvement."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidAudioFileException",
+                "description": "The input audio file could not be processed (invalid format, corrupted, etc.)."
+            },
+            {
+                "name": "UnsupportedFormatException",
+                "description": "The specified output format is not supported by the tool."
+            }
+        ]
+    }
+]

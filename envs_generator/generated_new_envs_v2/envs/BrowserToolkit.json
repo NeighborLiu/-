@@ -1,0 +1,151 @@
+[
+    {
+        "name": "navigate_to_url",
+        "description": "Navigates the browser to a specified URL.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "The URL to navigate to."
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "The maximum time in seconds to wait for the page to load."
+                }
+            },
+            "required": [
+                "url"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'current_url' (string, the actual URL after navigation), and 'error' (string, if any error occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidURLException",
+                "description": "The provided URL is invalid or cannot be parsed."
+            },
+            {
+                "name": "TimeoutException",
+                "description": "The page took longer than the specified timeout to load."
+            }
+        ]
+    },
+    {
+        "name": "extract_element_text",
+        "description": "Extracts text content from web elements matching a specified CSS selector on the current page.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "selector": {
+                    "type": "string",
+                    "description": "CSS selector to match elements."
+                },
+                "timeout": {
+                    "type": "number",
+                    "description": "Maximum time to wait for elements in milliseconds. Defaults to 5000 if not provided."
+                },
+                "all_text": {
+                    "type": "boolean",
+                    "description": "Whether to return all matched elements' text combined (true) or just the first (false). Defaults to false."
+                }
+            },
+            "required": [
+                "selector"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "Contains 'success' (boolean), 'text' (string or array of strings), and 'error_message' (string if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSelectorException",
+                "description": "The provided CSS selector is invalid or cannot be parsed."
+            },
+            {
+                "name": "TimeoutException",
+                "description": "No elements matching the selector were found within the specified timeout period."
+            }
+        ]
+    },
+    {
+        "name": "click_element",
+        "description": "Simulates a click on a specified HTML element using a selector and location method.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "selector": {
+                    "type": "string",
+                    "description": "The selector string used to locate the element (e.g., CSS selector, XPath)."
+                },
+                "by": {
+                    "type": "string",
+                    "description": "The method to locate the element, such as 'css', 'xpath', 'id', or 'name'."
+                }
+            },
+            "required": [
+                "selector",
+                "by"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean indicating if the click was successful) and 'error_message' (string describing any error that occurred)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "ElementNotFoundException",
+                "description": "The element specified by the selector and by parameters was not found on the current page."
+            },
+            {
+                "name": "InvalidSelectorException",
+                "description": "The selector or the method to locate the element is invalid or not supported."
+            }
+        ]
+    },
+    {
+        "name": "take_screenshot",
+        "description": "Capture a screenshot of the current webpage.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "file_path": {
+                    "type": "string",
+                    "description": "The local file path where the screenshot will be saved."
+                },
+                "full_page": {
+                    "type": "boolean",
+                    "description": "Whether to capture the entire webpage (including scrollable areas) instead of just the visible viewport. Defaults to false."
+                }
+            },
+            "required": [
+                "file_path"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'saved_path' (string, the actual path where the screenshot was saved if successful), and 'error_message' (string, if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "IOException",
+                "description": "Thrown when the file path is invalid, not writable, or an error occurs during the screenshot saving process."
+            }
+        ]
+    }
+]

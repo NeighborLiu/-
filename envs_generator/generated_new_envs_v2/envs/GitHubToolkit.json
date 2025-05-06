@@ -1,0 +1,214 @@
+[
+    {
+        "name": "get_issues",
+        "description": "Retrieve issues from a specified GitHub repository.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "The GitHub username or organization name of the repository owner."
+                },
+                "repo_name": {
+                    "type": "string",
+                    "description": "The name of the GitHub repository."
+                },
+                "state": {
+                    "type": "string",
+                    "description": "The state of the issues to retrieve (open, closed, or both). Defaults to open."
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list of label names to filter the issues by."
+                },
+                "sort": {
+                    "type": "string",
+                    "description": "Field used to sort the issues (e.g., created, updated, etc.)."
+                },
+                "order": {
+                    "type": "string",
+                    "description": "Sort order (asc for ascending, desc for descending)."
+                }
+            },
+            "required": [
+                "owner",
+                "repo_name"
+            ]
+        },
+        "returns": [
+            {
+                "name": "issues",
+                "type": "array",
+                "description": "An array of issue objects, each containing details like title, number, state, labels, and creation time."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "RepositoryNotFoundException",
+                "description": "The specified repository does not exist or could not be accessed."
+            },
+            {
+                "name": "InvalidParameterException",
+                "description": "One or more parameters are invalid (e.g., invalid state value, non-existent repository)."
+            }
+        ]
+    },
+    {
+        "name": "create_pull_request",
+        "description": "Create a new pull request in a GitHub repository.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "owner": {
+                    "type": "string",
+                    "description": "The GitHub username or organization name of the repository owner."
+                },
+                "repo": {
+                    "type": "string",
+                    "description": "The name of the GitHub repository."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the pull request."
+                },
+                "head": {
+                    "type": "string",
+                    "description": "The branch containing your changes (e.g., 'feature-branch')."
+                },
+                "base": {
+                    "type": "string",
+                    "description": "The branch you want the changes pulled into (e.g., 'main')."
+                },
+                "body": {
+                    "type": "string",
+                    "description": "Optional description of the pull request."
+                },
+                "draft": {
+                    "type": "boolean",
+                    "description": "Whether the pull request should be created as a draft."
+                }
+            },
+            "required": [
+                "owner",
+                "repo",
+                "title",
+                "head",
+                "base"
+            ]
+        },
+        "returns": [
+            {
+                "name": "result",
+                "type": "object",
+                "description": "An object containing 'success' (boolean), 'pull_request_url' (string, if successful), and 'error_message' (string, if unsuccessful)."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidRepositoryException",
+                "description": "The repository specified by 'owner' and 'repo' does not exist, or the user lacks access permissions."
+            },
+            {
+                "name": "BranchNotFoundException",
+                "description": "The 'head' or 'base' branch does not exist in the specified repository."
+            }
+        ]
+    },
+    {
+        "name": "search_issues",
+        "description": "Search for issues across GitHub repositories based on specific criteria such as keywords, labels, and state.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query string using GitHub's issue search syntax (e.g., 'is:issue label:bug')."
+                },
+                "owner": {
+                    "type": "string",
+                    "description": "The GitHub username of the repository owner."
+                },
+                "repo": {
+                    "type": "string",
+                    "description": "The name of the repository."
+                },
+                "state": {
+                    "type": "string",
+                    "description": "The state of the issues to retrieve (open, closed, or all)."
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "description": "Label name to filter by."
+                    },
+                    "description": "List of labels to filter issues by."
+                }
+            },
+            "required": [
+                "query"
+            ]
+        },
+        "returns": [
+            {
+                "name": "issues",
+                "type": "array",
+                "description": "List of issues matching the search criteria. Each issue object contains details such as title, number, state, body, and labels."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidSearchQueryException",
+                "description": "The provided search query is invalid or uses an unsupported syntax."
+            }
+        ]
+    },
+    {
+        "name": "list_repositories",
+        "description": "Retrieve a list of repositories for a specified GitHub user or organization.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "The GitHub username or organization name whose repositories are to be listed."
+                },
+                "visibility": {
+                    "type": "string",
+                    "description": "Filter repositories by visibility: 'public', 'private', 'internal', or 'all'."
+                },
+                "affiliation": {
+                    "type": "array",
+                    "description": "Filter repositories by affiliation. Valid values: 'owner', 'collaborator', 'organization_member'.",
+                    "items": {
+                        "type": "string",
+                        "description": "Affiliation type for filtering repositories."
+                    }
+                }
+            },
+            "required": [
+                "username"
+            ]
+        },
+        "returns": [
+            {
+                "name": "repositories",
+                "type": "array",
+                "description": "An array of repository objects containing details like name, description, visibility, and URL."
+            }
+        ],
+        "exceptions": [
+            {
+                "name": "InvalidUsernameException",
+                "description": "The specified username does not exist or the API could not retrieve repositories for it."
+            },
+            {
+                "name": "APIRequestException",
+                "description": "An error occurred while interacting with the GitHub API (e.g., rate limit exceeded, network issues)."
+            }
+        ]
+    }
+]
