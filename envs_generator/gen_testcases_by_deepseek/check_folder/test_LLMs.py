@@ -3,7 +3,7 @@ import openai  # 或其他大模型API的客户端库
 from openai import OpenAI
 
 # 配置API密钥和模型
-API_KEY = "sk-G9PKc5KmVixgbyNEExJKaVYaAg52IqEK19lsplvvFyRoueGW"
+API_KEY = "你的API密钥"
 MODEL_NAME = "gpt-4-32k"  # 或其他大模型名称
 # python envs_generator/gen_testcases_by_deepseek/check_result_folder/test_LLMs.py
 
