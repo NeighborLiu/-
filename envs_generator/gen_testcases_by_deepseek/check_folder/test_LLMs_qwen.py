@@ -4,7 +4,7 @@ import openai  # 或其他大模型API的客户端库
 from openai import OpenAI
 
 # 配置API密钥和模型
-API_KEY = "sk-cc2e01ef8eda4cc282bee4a990a02b3e"
+API_KEY = "你的qwen密钥"
 MODEL_NAME = "deepseek-reasoner"  # 或其他大模型名称
 BASE_URL = "https://api.deepseek.com/v1"
 # python envs_generator/gen_testcases_by_deepseek/check_result_folder/test_LLMs_qwen.py
